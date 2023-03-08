@@ -1,13 +1,11 @@
 <template>
   <Header>
     <div class="container">
-      <input v-model="queryMovie" placeholder="Recherchez vos films..." @input="movieListSearch" class='js-search'
-             type="text">
+      <input v-model="queryMovie" placeholder="Recherchez vos films..." @input="movieListSearch" class='js-search' type="text">
       <i class="fa fa-search"></i>
     </div>
   </Header>
   <div class="block-movieList">
-    <div class="loading" v-if="isSearching">Loading&#8230;</div>
     <p v-if="categorie">{{ categorie }}</p>
     <p v-if="resultats">Résultats : {{ resultats }}</p>
     <div class="blockButtonPage">
@@ -23,32 +21,45 @@
       <button @click="changePage(page+1)" v-if="pageNext <= totalPages"><i class="fa-solid fa-chevron-right"></i>
       </button>
     </div>
-    <div class="blockMovieList">
-      <div v-for="movie in movies" class="movieList" @mouseenter="showDetails = movie.id"
-           @mouseleave="showDetails = -1">
-        <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
-             :class="{ 'details': showDetails === movie.id }">
-        <p class="voteAverage">{{ parseFloat(movie.vote_average.toFixed(1)) }}</p>
-        <div class="descriptionMovie" :class="{'expanded' : showDetails === movie.id}">
-          <div class="container-descriptionMovie-p">
-            <p>{{ movie.title }}</p>
+    <div v-if="isSearching">
+      <div class="blockMovieListSkeleton">
+        <div v-for="i in 20">
+          <div class="movieListSkeleton">
+            <div class="voteAverageSkeleton"></div>
+            <div class="descriptionMovieSkeleton">
+            </div>
           </div>
-          <button :class="showDetails === movie.id ? 'buttonOn' : 'buttonOff'">Détails</button>
         </div>
       </div>
     </div>
-    <div class="blockButtonPage">
-      <button @click="changePage(page-1)" v-if="pagePrev !== 0"><i class="fa-solid fa-chevron-left"></i></button>
-      <button @click="changePage(minPage)" v-if="pagePrev !== 0 && page !== 2">{{ minPage }}</button>
-      <button @click="changePage(page-1)" v-if="pagePrev !== 0">{{ pagePrev }}</button>
-      <button disabled>{{ page }}</button>
-      <button @click="changePage(page+1)" v-if="pageNext <= totalPages">{{ pageNext }}</button>
-      <button @click="changePage(totalPages)" v-if="page !== totalPages && pageNext !== totalPages">{{
-          totalPages
-        }}
-      </button>
-      <button @click="changePage(page+1)" v-if="pageNext <= totalPages"><i class="fa-solid fa-chevron-right"></i>
-      </button>
+    <div v-else>
+      <div class="blockMovieList">
+        <div v-for="movie in movies" class="movieList" @mouseenter="showDetails = movie.id"
+             @mouseleave="showDetails = -1">
+          <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
+               :class="{ 'details': showDetails === movie.id }">
+          <p class="voteAverage">{{ parseFloat(movie.vote_average.toFixed(1)) }}</p>
+          <div class="descriptionMovie" :class="{'expanded' : showDetails === movie.id}">
+            <div class="container-descriptionMovie-p">
+              <p>{{ movie.title }}</p>
+            </div>
+            <button :class="showDetails === movie.id ? 'buttonOn' : 'buttonOff'">Détails</button>
+          </div>
+        </div>
+      </div>
+      <div class="blockButtonPage">
+        <button @click="changePage(page-1)" v-if="pagePrev !== 0"><i class="fa-solid fa-chevron-left"></i></button>
+        <button @click="changePage(minPage)" v-if="pagePrev !== 0 && page !== 2">{{ minPage }}</button>
+        <button @click="changePage(page-1)" v-if="pagePrev !== 0">{{ pagePrev }}</button>
+        <button disabled>{{ page }}</button>
+        <button @click="changePage(page+1)" v-if="pageNext <= totalPages">{{ pageNext }}</button>
+        <button @click="changePage(totalPages)" v-if="page !== totalPages && pageNext !== totalPages">{{
+            totalPages
+          }}
+        </button>
+        <button @click="changePage(page+1)" v-if="pageNext <= totalPages"><i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -168,7 +179,13 @@ export default {
 .block-movieList{
   margin-top: 10rem;
 }
-
+.descriptionMovieSkeleton{
+  position: absolute;
+  bottom: -15px;
+  background-color: rgba(0,0,0,0.1);
+  width: 100%;
+  height: 70px;
+}
 .container input[type=text] {
   padding: 15px 40px 15px 20px;
   width: 0;
@@ -208,7 +225,17 @@ export default {
   display: flex;
   gap: 10px;
 }
-
+.voteAverageSkeleton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  padding: 0.5rem !important;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
 .voteAverage {
   position: absolute;
   top: 0;
@@ -219,7 +246,12 @@ export default {
   width: 20px;
   font-size: 12px;
 }
-
+.blockMovieListSkeleton{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
 .blockMovieList {
   display: flex;
   flex-wrap: wrap;
@@ -251,7 +283,14 @@ export default {
 .descriptionMovie button {
   transition: all ease-in-out 0.2s;
 }
-
+.movieListSkeleton{
+  position: relative;
+  overflow: hidden;
+  width: 220px;
+  height: 332px;
+  border-radius: 10px 10px 10px 10px;
+  background-color: rgba(0,0,0,0.1);
+}
 .movieList {
   position: relative;
   overflow: hidden;
@@ -284,34 +323,19 @@ button {
 }
 
 .loading {
-  position: fixed;
-  z-index: 999;
-  height: 2em;
-  width: 2em;
-  overflow: visible;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  position: absolute;
 }
 
 /* Transparent Overlay */
 .loading:before {
   content: '';
   display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+
 }
 
 /* :not(:required) hides these rules from IE9 and below */
 .loading:not(:required) {
   /* hide "loading..." text */
-  font: 0/0 a;
   color: transparent;
   text-shadow: none;
   background-color: transparent;

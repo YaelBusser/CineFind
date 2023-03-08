@@ -1,5 +1,12 @@
 <template>
-    <MovieList/>
+  <Suspense>
+    <template #default>
+      <MovieList/>
+    </template>
+    <template #fallback>
+      Loading...
+    </template>
+  </Suspense>
 </template>
 <script>
 import MovieList from "./components/MovieList.vue";
