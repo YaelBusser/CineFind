@@ -138,7 +138,22 @@ button:focus{
     outline: none;
 }
 @font-face {
-    font-family: "CineFind";
+    font-family: "CineFindLight";
     src: url("./assets/fonts/NetflixSans-Light.woff2");
     src: url("./assets/fonts/NetflixSans-Light.woff2") format("woff2");
+}
+@font-face {
+    font-family: "CineFindRegular";
+    src: url("./assets/fonts/NetflixSans-Regular.otf");
+    src: url("./assets/fonts/NetflixSans-Regular.otf") format("woff2");
+}
+@font-face {
+    font-family: "CineFindMedium";
+    src: url("./assets/fonts/NetflixSans-Medium.woff2");
+    src: url("./assets/fonts/NetflixSans-Medium.woff2") format("woff2");
+}
+@font-face {
+    font-family: "CineFindBold";
+    src: url("./assets/fonts/NetflixSans-Bold.woff2");
+    src: url("./assets/fonts/NetflixSans-Bold.woff2") format("woff2");
 }
