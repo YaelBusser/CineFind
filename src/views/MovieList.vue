@@ -1,5 +1,6 @@
 <template>
   <div class="block-movieList">
+    <div v-if="this.movies.length === 0">Aucun résultat pour votre recherche : {{this.$route.query.q}}</div>
     <p v-if="categorie">{{ categorie }}</p>
     <p>Résultats : <span v-if="resultats">{{ resultats }}</span></p>
     <div class="blockButtonPage">
