@@ -1,13 +1,7 @@
 <template>
-  <Header>
-    <div class="container">
-      <input v-model="queryMovie" placeholder="Recherchez vos films..." @input="movieListSearch" class='js-search' type="text">
-      <i class="fa fa-search"></i>
-    </div>
-  </Header>
   <div class="block-movieList">
     <p v-if="categorie">{{ categorie }}</p>
-    <p v-if="resultats">Résultats : {{ resultats }}</p>
+    <p>Résultats : <span v-if="resultats">{{ resultats }}</span></p>
     <div class="blockButtonPage">
       <button @click="changePage(page-1)" v-if="pagePrev !== 0"><i class="fa-solid fa-chevron-left"></i></button>
       <button @click="changePage(minPage)" v-if="pagePrev !== 0 && page !== 2">{{ minPage }}</button>
@@ -64,7 +58,7 @@
   </div>
 </template>
 <script>
-import Header from "./Header.vue";
+import Header from "../components/Header.vue";
 
 export default {
   components: {
@@ -86,10 +80,31 @@ export default {
       requestMovieList: "",
     }
   },
+  async created() {
+    // appel initial pour obtenir les données à afficher
+    await this.getData();
+  },
+  watch: {
+    // watch sur $route pour détecter les changements d'URL
+    $route: {
+      handler: 'getData', // appelle getData() lorsque $route change
+      immediate: true // appelle handler immédiatement au chargement initial
+    }
+  },
   methods: {
+    async getData() {
+      if (!this.$route.query.q) {
+        this.$router.replace({ path: "/" });
+      }
+      if (this.$route.query.q) {
+        await this.movieListSearch();
+      } else {
+        await this.movieListPop();
+      }
+    },
     async movieListSearch() {
       this.isSearching = true;
-      this.requestMovieList = "https://api.themoviedb.org/3/search/movie?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&query=" + this.queryMovie;
+      this.requestMovieList = "https://api.themoviedb.org/3/search/movie?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&query=" + this.$route.query.q;
       fetch(`${this.requestMovieList}`)
           .then(response => response.json())
           .then(data => {
@@ -107,8 +122,8 @@ export default {
           }).catch(error => {
         console.log(error);
       });
-      this.categorie = "Mots clés : " + this.queryMovie;
-      if (this.queryMovie === "") {
+      this.categorie = "Mots clés : " + this.$route.query.q;
+      if (this.$route.query.q === "") {
         await this.movieListPop();
       }
     },
@@ -132,6 +147,7 @@ export default {
       });
       this.categorie = "Films populaires";
     },
+
     changePage(laPage) {
       this.page = laPage;
       this.pageNext = this.page + 1;
@@ -171,7 +187,7 @@ export default {
     },
   },
   mounted() {
-    this.movieListPop();
+    this.getData();
   }
 }
 </script>
@@ -184,32 +200,7 @@ export default {
   bottom: -15px;
   background-color: rgba(0,0,0,0.1);
   width: 100%;
-  height: 70px;
-}
-.container input[type=text] {
-  padding: 15px 40px 15px 20px;
-  width: 0;
-  color: #525252;
-  font-size: 16px;
-  font-weight: 100;
-  letter-spacing: 2px;
-  border: none;
-  border-radius: 5px;
-  background: rgba(0, 0, 0, 0.1);
-  transition: width 0.4s ease;
-  outline: none;
-  z-index: 2;
-}
-
-.container input[type=text]:focus {
-  width: 300px;
-}
-
-.container i {
-  position: relative;
-  left: -37px;
-  color: black;
-  z-index: 0;
+  height: 95px;
 }
 
 .blockSearching img {

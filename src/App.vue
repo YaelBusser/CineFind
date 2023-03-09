@@ -1,20 +1,20 @@
 <template>
-  <Suspense>
-    <template #default>
-      <MovieList/>
-    </template>
-    <template #fallback>
-      Loading...
-    </template>
-  </Suspense>
+  <Header @search-movie="searchMovie">
+  </Header>
+  <router-view/>
 </template>
 <script>
-import MovieList from "./components/MovieList.vue";
+import Header from "./components/Header.vue";
 
 export default {
   components: {
-    MovieList
-  }
+    Header,
+  },
+  methods: {
+    searchMovie(searchText) {
+      this.$router.push({path: '/search', query: {q: searchText}});
+    },
+  },
 }
 </script>
 <style scoped>

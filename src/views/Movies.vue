@@ -1,10 +1,10 @@
 <template>
-
+<h1>Movies</h1>
 </template>
 
 <script>
 export default {
-  name: "MovieListSkeleton"
+  name: "Movies"
 }
 </script>
 
