@@ -6,19 +6,19 @@
       </router-link>
       <div class="nav-text">
         <router-link to="/">
-          <p>Accueil</p>
-        </router-link>
-        <router-link to="/movies">
-          <p>Films</p>
+          <p :class="{'current': $route.path == '/' }">Accueil</p>
         </router-link>
         <router-link to="/series">
-          <p>Séries</p>
+          <p :class="{'current': $route.path == '/series' }">Séries</p>
+        </router-link>
+        <router-link to="/movies">
+          <p :class="{'current': $route.path == '/movies' }">Films</p>
         </router-link>
       </div>
     </nav>
     <div class="header-right">
       <div class="block-search">
-        <input v-model="searchText" @input="searchMovie" placeholder="Recherchez vos films..." class='js-search'
+        <input v-model="searchText" @input="searchMovie" placeholder="Recherchez vos films, séries..." class='js-search'
                type="text">
         <i class="fa fa-search"></i>
       </div>
@@ -43,8 +43,8 @@ export default {
 </script>
 
 <style scoped>
-.block-search {
-
+.current {
+  font-family: CineFindBold;
 }
 
 .block-search input[type=text] {
@@ -56,7 +56,7 @@ export default {
   letter-spacing: 2px;
   border: none;
   background-color: rgba(0, 0, 0, 0);
-  transition: width 0.4s ease;
+  transition: all 0.4s ease;
   outline: none!important;
   z-index: 2;
   color: white;
@@ -85,23 +85,28 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 1;
 }
 .header-right{
 }
 nav {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 50px;
   margin-left: 50px;
 }
-
+nav a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 nav img {
   width: 100px;
 }
 
 nav p {
-  font-family: CineFindRegular;
-  color: white;
+  font-family: CineFindLight;
+  color: #f1f1f1;
   transition: all 0.1s ease-in-out;
   font-size: 15px;
 }
