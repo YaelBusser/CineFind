@@ -281,7 +281,7 @@ export default {
   width: 220px;
   height: 332px;
   border-radius: 10px 10px 10px 10px;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(255,255,255,0.1);
 }
 .movieList {
   position: relative;
