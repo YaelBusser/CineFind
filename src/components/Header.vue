@@ -18,7 +18,7 @@
     </nav>
     <div class="header-right">
       <div class="block-search">
-        <input v-model="searchText" @input="searchMovie" placeholder="Recherchez vos films, séries..." class='js-search'
+        <input v-model="searchText" @input="searchMovie" @keyup.enter="searchMovie" placeholder="Recherchez vos films, séries..." class='js-search'
                type="text">
         <i class="fa fa-search"></i>
       </div>

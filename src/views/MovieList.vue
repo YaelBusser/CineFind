@@ -1,6 +1,6 @@
 <template>
   <div class="block-movieList">
-    <div v-if="this.movies.length === 0">Aucun résultat pour votre recherche : {{this.$route.query.q}}</div>
+    <div v-if="this.movies.length === 0">Aucun résultat pour votre recherche : {{ this.$route.query.q }}</div>
     <p v-if="categorie">{{ categorie }}</p>
     <p>Résultats : <span v-if="resultats">{{ resultats }}</span></p>
     <div class="blockButtonPage">
@@ -31,14 +31,16 @@
       <div class="blockMovieList">
         <div v-for="movie in movies" class="movieList" @mouseenter="showDetails = movie.id"
              @mouseleave="showDetails = -1">
-          <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
-               :class="{ 'details': showDetails === movie.id }">
-          <p class="voteAverage">{{ parseFloat(movie.vote_average.toFixed(1)) }}</p>
-          <div class="descriptionMovie" :class="{'expanded' : showDetails === movie.id}">
-            <div class="container-descriptionMovie-p">
-              <p>{{ movie.title }}</p>
+          <div v-if="movie.poster_path !== null">
+            <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"
+                 :class="{ 'details': showDetails === movie.id }">
+            <p class="voteAverage">{{ parseFloat(movie.vote_average.toFixed(1)) }}</p>
+            <div class="descriptionMovie" :class="{'expanded' : showDetails === movie.id}">
+              <div class="container-descriptionMovie-p">
+                <p>{{ movie.title }}</p>
+              </div>
+              <button :class="showDetails === movie.id ? 'buttonOn' : 'buttonOff'">Détails</button>
             </div>
-            <button :class="showDetails === movie.id ? 'buttonOn' : 'buttonOff'">Détails</button>
           </div>
         </div>
       </div>
@@ -68,6 +70,7 @@ export default {
   data() {
     return {
       movies: [],
+      moviesOk: [],
       showDetails: -1,
       isSearching: false,
       queryMovie: "",
@@ -95,7 +98,7 @@ export default {
   methods: {
     async getData() {
       if (!this.$route.query.q) {
-        this.$router.replace({ path: "/" });
+        this.$router.replace({path: "/"});
       }
       if (this.$route.query.q) {
         await this.movieListSearch();
@@ -193,13 +196,14 @@ export default {
 }
 </script>
 <style scoped>
-.block-movieList{
+.block-movieList {
   margin-top: 10rem;
 }
-.descriptionMovieSkeleton{
+
+.descriptionMovieSkeleton {
   position: absolute;
   bottom: -15px;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 95px;
 }
@@ -217,6 +221,7 @@ export default {
   display: flex;
   gap: 10px;
 }
+
 .voteAverageSkeleton {
   position: absolute;
   top: 10px;
@@ -228,6 +233,7 @@ export default {
   height: 20px;
   font-size: 12px;
 }
+
 .voteAverage {
   position: absolute;
   top: 0;
@@ -238,12 +244,14 @@ export default {
   width: 20px;
   font-size: 12px;
 }
-.blockMovieListSkeleton{
+
+.blockMovieListSkeleton {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
 }
+
 .blockMovieList {
   display: flex;
   flex-wrap: wrap;
@@ -275,14 +283,16 @@ export default {
 .descriptionMovie button {
   transition: all ease-in-out 0.2s;
 }
-.movieListSkeleton{
+
+.movieListSkeleton {
   position: relative;
   overflow: hidden;
   width: 220px;
   height: 332px;
   border-radius: 10px 10px 10px 10px;
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
+
 .movieList {
   position: relative;
   overflow: hidden;

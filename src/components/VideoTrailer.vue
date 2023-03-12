@@ -22,7 +22,7 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.movie = data.results;
-            this.theMovie = this.movie[2].id;
+            this.theMovie = this.movie[3].id;
             this.videoMoviePopular();
           }).catch(error => {
         console.log(error);
@@ -54,7 +54,8 @@ export default {
 </script>
 <style scoped>
 iframe {
-  clip-path: inset(115px 0);
+  margin-top: -7px;
+  clip-path: inset(120px 0);
   border: none;
   width: 100%;
   height: 100vh;
