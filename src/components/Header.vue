@@ -70,7 +70,7 @@ export default {
 .block-search input[type=text] {
   padding: 15px 40px 15px 20px;
   width: 0;
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
   font-size: 16px;
   font-weight: 100;
   letter-spacing: 2px;
@@ -81,10 +81,13 @@ export default {
   z-index: 2;
   color: white;
 }
-
+.block-search input[type=text]::placeholder{
+  color: rgba(255, 255, 255, 0.5);
+}
 .block-search input[type=text]:focus {
   width: 300px;
   border: 1px solid rgba(255, 255, 255, 0.5);
+  background-color: rgba(0,0,0,0.3);
 }
 
 .block-search i {

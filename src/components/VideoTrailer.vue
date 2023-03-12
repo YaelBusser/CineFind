@@ -5,8 +5,6 @@
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       allowfullscreen></iframe>
   <div class="botiframe"></div>
-
-
 </template>
 <script>
 export default {
@@ -24,7 +22,7 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.movie = data.results;
-            this.theMovie = this.movie[3].id;
+            this.theMovie = this.movie[2].id;
             this.videoMoviePopular();
           }).catch(error => {
         console.log(error);
@@ -44,7 +42,7 @@ export default {
     videoUrl() {
       if (this.video.length > 0) {
         const videoKey = this.video[0].key;
-        return `https://www.youtube.com/embed/${videoKey}?controls=0&autoplay=1&mute=0&vq=hd1080&loop=1&autohide=1&showinfo=0&modestbranding=1`;
+        return `https://www.youtube.com/embed/${videoKey}?controls=0&autoplay=1&mute=1&vq=hd1080&loop=1&autohide=1&showinfo=0&modestbranding=1`;
       }
       return "";
     }
@@ -54,9 +52,9 @@ export default {
   },
 }
 </script>
-
 <style scoped>
 iframe {
+  clip-path: inset(115px 0);
   border: none;
   width: 100%;
   height: 100vh;
@@ -65,7 +63,9 @@ iframe {
   right: 0;
   top: 0;
   pointer-events: none;
-  transform: scaleX(1.15);
+  transform: scale(1.33);
+  object-fit: cover;
+
 }
 
 .botiframe {
