@@ -1,18 +1,18 @@
 <template>
-  <div class="header">
+  <div class="header" :class="{ 'scrolled': scrolled }">
     <nav>
       <router-link to="/">
         <img src="https://fontmeme.com/permalink/230308/1f21cf983ff5e620f00dbddf24b20df5.png" alt="netflix-font">
       </router-link>
       <div class="nav-text">
         <router-link to="/">
-          <p :class="{'current': $route.path == '/' }">Accueil</p>
+          <p :class="{'current': $route.path === '/' }">Accueil</p>
         </router-link>
         <router-link to="/series">
-          <p :class="{'current': $route.path == '/series' }">Séries</p>
+          <p :class="{'current': $route.path === '/series' }">Séries</p>
         </router-link>
         <router-link to="/movies">
-          <p :class="{'current': $route.path == '/movies' }">Films</p>
+          <p :class="{'current': $route.path === '/movies' }">Films</p>
         </router-link>
       </div>
     </nav>
@@ -27,17 +27,37 @@
 </template>
 
 <script>
+window.setInterval(function () {
+  if (this.handleScroll) {
+    this.handleScroll();
+  }
+}, 0);
+
 export default {
   name: "Header",
   data() {
     return {
       searchText: '',
+      scrolled: false,
     };
   },
   methods: {
     searchMovie() {
       this.$emit('search-movie', this.searchText);
     },
+    handleScroll() {
+      if (scrollY !== 0) {
+        this.scrolled = true;
+      } else {
+        this.scrolled = false;
+      }
+    }
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll)
   },
 }
 </script>
@@ -50,21 +70,21 @@ export default {
 .block-search input[type=text] {
   padding: 15px 40px 15px 20px;
   width: 0;
-  color: rgba(255,255,255,0.8)!important;
+  color: rgba(255, 255, 255, 0.8) !important;
   font-size: 16px;
   font-weight: 100;
   letter-spacing: 2px;
   border: none;
   background-color: rgba(0, 0, 0, 0);
   transition: all 0.4s ease;
-  outline: none!important;
+  outline: none !important;
   z-index: 2;
   color: white;
 }
 
 .block-search input[type=text]:focus {
   width: 300px;
-  border: 1px solid rgba(255,255,255,0.5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .block-search i {
@@ -80,26 +100,35 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  background-color: rgb(20, 20, 20);
+  background-color: rgba(0,0,0,0);
   height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 1;
+  transition: all 0.5s ease-in-out;
 }
-.header-right{
+
+.scrolled {
+  background-color: rgb(20, 20, 20);
 }
+
+.header-right {
+}
+
 nav {
   display: flex;
   align-items: center;
   gap: 50px;
   margin-left: 50px;
 }
+
 nav a {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 nav img {
   width: 100px;
 }

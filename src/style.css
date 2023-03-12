@@ -43,6 +43,7 @@ body {
     background-color: #141414;
     color: #333;
     transition: all 0.2s ease-in-out;
+    overflow-x: hidden;
 }
 
 body.dark-mode {
@@ -156,14 +157,4 @@ button:focus{
     font-family: "CineFindBold";
     src: url("./assets/fonts/NetflixSans-Bold.woff2");
     src: url("./assets/fonts/NetflixSans-Bold.woff2") format("woff2");
-}
-iframe{
-    border: 1px solid red;
-    width: 100%;
-    height: 100vh;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    pointer-events: none;
 }
