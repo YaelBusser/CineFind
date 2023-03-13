@@ -1,12 +1,19 @@
 <template>
-  <div class="block-top10">
-    <div v-for="(movie, index) in movies" class="content-top10">
-      <svg width="100%" height="100%" :viewBox="viewBox[index]" :class="'svg' + index">
-        <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
-              :d="logoNumber[index]"></path>
-      </svg>
-      <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
+  <div class="container">
+  <div class="block-main-moviestop10">
+    <h2>Top 10 des films aujourd'hui</h2>
+    <div class="block-top10">
+      <div v-for="(movie, index) in movies" class="content-top10">
+        <svg width="100%" height="100%" :viewBox="viewBox[index]" :class="'svg' + index">
+          <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
+                :d="logoNumber[index]"></path>
+        </svg>
+        <img class="itemPoster" :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
+      </div>
     </div>
+  </div>
+    <a class="switchLeft sliderButton" @click="sliderScrollLeft">&lt;</a>
+    <a class="switchRight sliderButton" @click="sliderScrollRight">></a>
   </div>
 </template>
 <script>
@@ -18,7 +25,14 @@ export default {
       movies10: [],
       logoNumber: [],
       viewBox: [],
+      sliders: null,
     }
+  },
+  mounted() {
+    this.moviePopular();
+    this.getNumber();
+    this.getViewBox();
+    this.sliders = document.querySelector(".block-top10");
   },
   methods: {
     async moviePopular() {
@@ -30,7 +44,7 @@ export default {
         console.log(error);
       });
     },
-    getViewBox(){
+    getViewBox() {
       this.viewBox.push("-20 0 70 154");
       this.viewBox.push("0 0 80 154");
       this.viewBox.push("0 0 80 154");
@@ -53,28 +67,76 @@ export default {
       this.logoNumber.push("M 59.5 152 c 11.335 0 21.358 -1.72 30.077 -5.15 c 8.637 -3.397 15.361 -8.258 20.213 -14.586 c 4.805 -6.267 7.21 -13.876 7.21 -22.899 c 0 -7.326 -2.261 -14.07 -6.813 -20.29 c -4.548 -6.214 -10.837 -10.658 -18.922 -13.35 l -5.4 -1.799 l 5.338 -1.975 c 7.238 -2.678 12.572 -6.683 16.066 -12.018 c 3.53 -5.388 5.284 -11.178 5.284 -17.414 c 0 -7.912 -2.133 -14.839 -6.405 -20.84 c -4.3 -6.042 -10.403 -10.825 -18.345 -14.351 C 79.816 3.78 70.386 2 59.5 2 S 39.184 3.781 31.197 7.328 c -7.942 3.526 -14.044 8.309 -18.345 14.351 c -4.272 6.001 -6.405 12.928 -6.405 20.84 c 0 6.236 1.755 12.026 5.284 17.414 c 3.494 5.335 8.828 9.34 16.066 12.018 l 5.338 1.975 l -5.4 1.798 c -8.085 2.693 -14.374 7.137 -18.922 13.351 C 4.261 95.295 2 102.04 2 109.365 c 0 9.023 2.405 16.632 7.21 22.899 c 4.852 6.328 11.576 11.19 20.213 14.586 c 8.72 3.43 18.742 5.15 30.077 5.15 Z m 0.5 -89 c -5.6 0 -10.334 -1.515 -14.125 -4.56 C 41.985 55.313 40 51.183 40 46.21 c 0 -5.244 1.976 -9.518 5.875 -12.65 C 49.666 30.515 54.4 29 60 29 s 10.334 1.515 14.125 4.56 C 78.025 36.694 80 40.968 80 46.212 c 0 4.973 -1.985 9.103 -5.875 12.228 C 70.334 61.485 65.6 63 60 63 Z m -0.5 62 c -6.255 0 -11.556 -1.613 -15.836 -4.856 c -4.41 -3.343 -6.664 -7.816 -6.664 -13.25 c 0 -5.298 2.258 -9.698 6.664 -13.038 C 47.944 90.613 53.245 89 59.5 89 c 6.255 0 11.556 1.613 15.836 4.856 c 4.406 3.34 6.664 7.74 6.664 13.038 c 0 5.434 -2.254 9.907 -6.664 13.25 C 71.056 123.387 65.755 125 59.5 125 Z");
       this.logoNumber.push("M 40.0597 115.808 L 4.47328 115.808 C 7.45109 126.586 13.4363 135.155 22.4671 141.582 C 32.2129 148.518 44.564 152 59.576 152 C 78.2142 152 92.5106 145.698 102.645 133.075 C 112.854 120.36 118 101.544 118 76.5769 C 118 62.1603 115.679 49.3016 111.047 37.9886 C 106.453 26.7698 99.6242 17.9803 90.5435 11.5768 C 81.5018 5.20073 70.1375 2 56.3958 2 C 49.4158 2 42.6823 3.15952 36.185 5.47967 C 29.7046 7.79377 23.8783 11.1933 18.6949 15.6846 C 13.5317 20.1584 9.45924 25.5084 6.46782 31.7491 C 3.49282 37.9556 2 45.0644 2 53.0962 C 2 61.9117 4.02798 69.7019 8.07889 76.5057 C 12.1435 83.3323 17.5833 88.6925 24.4219 92.6108 C 31.2518 96.5242 38.8591 98.4808 47.2792 98.4808 C 55.0854 98.4808 61.6096 97.3619 66.8547 95.1478 C 72.057 92.9518 76.4513 89.597 80.0606 85.0622 L 84.0585 80.0391 L 83.6208 86.444 C 82.7475 99.2241 80.0984 108.438 75.5533 114.107 C 70.931 119.872 64.7727 122.788 57.2438 122.788 C 52.8691 122.788 49.1904 122.1 46.2125 120.693 C 43.593 119.455 41.5308 117.826 40.0597 115.808 Z M 57.5 31 C 63.3657 31 68.442 32.9365 72.63 36.7826 C 76.861 40.6682 79 45.6186 79 51.5 C 79 57.3814 76.861 62.3318 72.63 66.2174 C 68.442 70.0635 63.3657 72 57.5 72 C 51.6343 72 46.558 70.0635 42.37 66.2174 C 38.139 62.3318 36 57.3814 36 51.5 C 36 45.6186 38.139 40.6682 42.37 36.7826 C 46.558 32.9365 51.6343 31 57.5 31 Z");
       this.logoNumber.push("M 34.757 151.55 h 35.869 V 2.976 L 2 19.687 v 30.14 l 32.757 -8.41 v 110.132 Z m 105.53 3.45 c 12.394 0 23.097 -3.12 32.163 -9.353 c 9.093 -6.25 16.11 -15.047 21.066 -26.43 C 198.5 107.766 201 94.196 201 78.5 c 0 -15.698 -2.5 -29.266 -7.484 -40.716 c -4.955 -11.384 -11.973 -20.18 -21.066 -26.431 C 163.384 5.119 152.681 2 140.287 2 c -12.393 0 -23.096 3.12 -32.162 9.353 c -9.093 6.25 -16.11 15.047 -21.066 26.43 c -4.984 11.45 -7.484 25.02 -7.484 40.717 c 0 15.698 2.5 29.266 7.484 40.716 c 4.955 11.384 11.973 20.18 21.066 26.431 c 9.066 6.234 19.769 9.353 32.162 9.353 Z m 0 -31.368 c -7.827 0 -13.942 -4.147 -18.15 -12.178 c -4.053 -7.736 -6.047 -18.713 -6.047 -32.954 s 1.994 -25.218 6.047 -32.954 c 4.208 -8.03 10.323 -12.178 18.15 -12.178 c 7.827 0 13.943 4.147 18.15 12.178 c 4.053 7.736 6.048 18.713 6.048 32.954 s -1.995 25.218 -6.047 32.954 c -4.208 8.03 -10.324 12.178 -18.15 12.178 Z");
-    }
-  },
-  mounted() {
-    this.moviePopular();
-    this.getNumber();
-    this.getViewBox();
+    },
+    sliderScrollLeft() {
+      this.sliders.style.transform = "translate3d(0, 0px, 0px)";
+    },
+    sliderScrollRight() {
+      this.sliders.style.transform = "translate3d(-100%, 0px, 0px)";
+    },
   },
 }
 </script>
 <style scoped>
+.container{
+  margin-top: 200px;
+  position: relative;
+}
+.switchLeft, .switchRight {
+  color: white;
+  font-weight: bold;
+  font-size: 25px;
+  font-family: CineFindBold,serif;
+  z-index: 3;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  position: absolute;
+  width: 50px;
+  cursor: pointer;
+}
+
+.switchLeft {
+  left: 0;
+  top: 0;
+}
+
+.switchRight {
+  top: 0;
+  right: 0;
+}
+
+.block-main-moviestop10 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: #e3e3e3;
+  font-family: CineFindMedium,serif;
+  width: 90%;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  padding-bottom: 50px;
+}
+
+.block-main-moviestop10 h2 {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  text-align: left;
+  font-size: 1.4vw;
+  line-height: 1.25vw;
+}
+
 .block-top10 {
   display: flex;
   gap: 180px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -150px;
   margin-left: auto;
   margin-right: auto;
-  width: 80%;
+  width: 90%;
   padding-left: 150px;
-  overflow: hidden;
+  transition: all 0.5s ease-in-out;
 }
 
 .block-top10 img {

@@ -46,7 +46,7 @@ export default {
     videoUrl() {
       if (this.video.length > 0) {
         const videoKey = this.video[0].key;
-        return `https://www.youtube.com/embed/${videoKey}?loop=1controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1`;
+        return `https://www.youtube.com/embed/${videoKey}?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=${videoKey}`;
       }
       return "";
     }

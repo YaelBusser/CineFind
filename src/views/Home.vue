@@ -1,6 +1,6 @@
 <template>
   <VideoTrailer>
-  <Movies10 />
+    <Movies10/>
   </VideoTrailer>
   <MovieList></MovieList>
 </template>

@@ -44,6 +44,7 @@ body {
     color: #333;
     transition: all 0.2s ease-in-out;
     overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
 body.dark-mode {
@@ -157,4 +158,11 @@ button:focus{
     font-family: "CineFindBold";
     src: url("./assets/fonts/NetflixSans-Bold.woff2");
     src: url("./assets/fonts/NetflixSans-Bold.woff2") format("woff2");
+}
+.itemPoster{
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+.itemPoster:hover{
+    transform: scale(1.2);
 }
