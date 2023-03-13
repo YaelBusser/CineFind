@@ -22,7 +22,6 @@ export default {
   data() {
     return {
       movies: [],
-      movies10: [],
       logoNumber: [],
       viewBox: [],
       sliders: null,
@@ -72,7 +71,7 @@ export default {
       this.sliders.style.transform = "translate3d(0, 0px, 0px)";
     },
     sliderScrollRight() {
-      this.sliders.style.transform = "translate3d(-100%, 0px, 0px)";
+      this.sliders.style.transform = "translate3d(-77%, 0px, 0px)";
     },
   },
 }
@@ -95,8 +94,13 @@ export default {
   position: absolute;
   width: 50px;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background: none;
 }
-
+.switchLeft:hover, .switchRight:hover{
+  background: linear-gradient(180deg, hsla(0, 0%, 8%, 0) 0, hsla(0, 0%, 8%, .15) 15%, hsla(0, 0%, 8%, .35) 29%, hsla(0, 0%, 8%, .58) 44%, #141414 90%, #141414);
+  font-size: 35px;
+}
 .switchLeft {
   left: 0;
   top: 0;
@@ -113,7 +117,7 @@ export default {
   gap: 20px;
   color: #e3e3e3;
   font-family: CineFindMedium,serif;
-  width: 90%;
+  width: 100%;
   height: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -127,6 +131,7 @@ export default {
   text-align: left;
   font-size: 1.4vw;
   line-height: 1.25vw;
+  padding-left: 75px;
 }
 
 .block-top10 {
