@@ -1,10 +1,14 @@
 <template>
-  <iframe
-      :src="videoUrl"
-      title="YouTube video player"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen></iframe>
-  <div class="botiframe"></div>
+  <div class="block-video">
+    <iframe
+        :src="videoUrl"
+        title="YouTube video player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen></iframe>
+  </div>
+  <div class="bg-overlay">
+    <slot></slot>
+  </div>
 </template>
 <script>
 export default {
@@ -22,7 +26,7 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.movie = data.results;
-            this.theMovie = this.movie[3].id;
+            this.theMovie = this.movie[0].id;
             this.videoMoviePopular();
           }).catch(error => {
         console.log(error);
@@ -42,7 +46,7 @@ export default {
     videoUrl() {
       if (this.video.length > 0) {
         const videoKey = this.video[0].key;
-        return `https://www.youtube.com/embed/${videoKey}?controls=0&autoplay=1&mute=1&vq=hd1080&loop=1&autohide=1&showinfo=0&modestbranding=1`;
+        return `https://www.youtube.com/embed/${videoKey}?loop=1controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1`;
       }
       return "";
     }
@@ -66,7 +70,24 @@ iframe {
   pointer-events: none;
   transform: scale(1.33);
   object-fit: cover;
+  background: linear-gradient(77deg, rgba(0, 0, 0, .6), transparent 85%);
 
+}
+
+.block-video {
+  width: 100%;
+  height: 100vh;
+}
+
+.bg-overlay {
+  position: absolute;
+  width: 100%;
+  height: 350px;
+  left: 0;
+  right: 0;
+  bottom: 0px;
+  z-index: 0;
+  background: linear-gradient(180deg, hsla(0, 0%, 8%, 0) 0, hsla(0, 0%, 8%, .15) 15%, hsla(0, 0%, 8%, .35) 29%, hsla(0, 0%, 8%, .58) 44%, #141414 90%, #141414);
 }
 
 .botiframe {
