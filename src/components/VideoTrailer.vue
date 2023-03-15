@@ -17,7 +17,8 @@ export default {
     return {
       movie: [],
       video: [],
-      theMovie: ""
+      theMovie: "",
+      random: Math.floor(Math.random() * 10),
     }
   },
   methods: {
@@ -26,7 +27,7 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.movie = data.results;
-            this.theMovie = this.movie[0].id;
+            this.theMovie = this.movie[this.random].id;
             this.videoMoviePopular();
           }).catch(error => {
         console.log(error);

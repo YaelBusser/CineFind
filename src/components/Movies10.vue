@@ -1,22 +1,25 @@
 <template>
   <div class="container">
-  <div class="block-main-moviestop10">
-    <h2>Top 10 des films aujourd'hui</h2>
-    <div class="block-top10">
-      <div v-for="(movie, index) in movies" class="content-top10">
-        <svg width="100%" height="100%" :viewBox="viewBox[index]" :class="'svg' + index">
-          <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
-                :d="logoNumber[index]"></path>
-        </svg>
-        <img class="itemPoster" :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
+    <div class="block-main-moviestop10">
+      <h2>Top 10 des films aujourd'hui</h2>
+      <div class="slide">
+        <div v-for="(movie, index) in movies" class="content-top10">
+          <svg :id="`item${index}`" width="100%" height="100%" :viewBox="index === 0 ? viewBox[9] : viewBox[index-1]" :class="'svg' + index">
+            <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
+                  :d="index === 0 ? logoNumber[9] : logoNumber[index-1]"></path>
+          </svg>
+          <img class="itemPoster" :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
+        </div>
+
       </div>
     </div>
-  </div>
     <a class="switchLeft sliderButton" @click="sliderScrollLeft">&lt;</a>
     <a class="switchRight sliderButton" @click="sliderScrollRight">></a>
   </div>
 </template>
 <script>
+import {forEach} from "@splidejs/splide/src/js/utils";
+
 export default {
   name: "VideoTrailer",
   data() {
@@ -25,20 +28,35 @@ export default {
       logoNumber: [],
       viewBox: [],
       sliders: null,
+      countLeft: 0,
+      countRight: 0,
+      countCallRight: 0,
+      slideIndex: 2,
     }
   },
   mounted() {
     this.moviePopular();
     this.getNumber();
     this.getViewBox();
-    this.sliders = document.querySelector(".block-top10");
+  },
+  updated() {
+    this.sliders = document.querySelectorAll(".slide")[0];
+    this.firstItem = document.getElementById("item0").cloneNode();
   },
   methods: {
+    moveSlides(){
+      this.sliders.style.transform = `translateX(-${this.slideIndex * 50}%)`;
+      let slideArray = [...this.sliders.querySelectorAll('.content-top10')];
+    },
     async moviePopular() {
       fetch("https://api.themoviedb.org/3/movie/popular?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
           .then(response => response.json())
           .then(data => {
-            this.movies = data.results.slice(0, 10);
+            data = data.results.slice(0, 10);
+            data.push(data[0]);
+            data.unshift(data[data.length - 2]);
+            console.log(data);
+            this.movies = data;
           }).catch(error => {
         console.log(error);
       });
@@ -68,24 +86,30 @@ export default {
       this.logoNumber.push("M 34.757 151.55 h 35.869 V 2.976 L 2 19.687 v 30.14 l 32.757 -8.41 v 110.132 Z m 105.53 3.45 c 12.394 0 23.097 -3.12 32.163 -9.353 c 9.093 -6.25 16.11 -15.047 21.066 -26.43 C 198.5 107.766 201 94.196 201 78.5 c 0 -15.698 -2.5 -29.266 -7.484 -40.716 c -4.955 -11.384 -11.973 -20.18 -21.066 -26.431 C 163.384 5.119 152.681 2 140.287 2 c -12.393 0 -23.096 3.12 -32.162 9.353 c -9.093 6.25 -16.11 15.047 -21.066 26.43 c -4.984 11.45 -7.484 25.02 -7.484 40.717 c 0 15.698 2.5 29.266 7.484 40.716 c 4.955 11.384 11.973 20.18 21.066 26.431 c 9.066 6.234 19.769 9.353 32.162 9.353 Z m 0 -31.368 c -7.827 0 -13.942 -4.147 -18.15 -12.178 c -4.053 -7.736 -6.047 -18.713 -6.047 -32.954 s 1.994 -25.218 6.047 -32.954 c 4.208 -8.03 10.323 -12.178 18.15 -12.178 c 7.827 0 13.943 4.147 18.15 12.178 c 4.053 7.736 6.048 18.713 6.048 32.954 s -1.995 25.218 -6.047 32.954 c -4.208 8.03 -10.324 12.178 -18.15 12.178 Z");
     },
     sliderScrollLeft() {
-      this.sliders.style.transform = "translate3d(0, 0px, 0px)";
+      this.countRight += 85;
+      this.countLeft += 85;
+      this.sliders.style.transform = "translate3d(" + this.countLeft + "%, 0px, 0px)";
+      console.log(this.countRight);
+      console.log(this.countLeft);
+      console.log(this.firstItem);
     },
     sliderScrollRight() {
-      this.sliders.style.transform = "translate3d(-77%, 0px, 0px)";
+      this.moveSlides();
     },
   },
 }
 </script>
 <style scoped>
-.container{
+.container {
   margin-top: 200px;
   position: relative;
 }
+
 .switchLeft, .switchRight {
   color: white;
   font-weight: bold;
   font-size: 25px;
-  font-family: CineFindBold,serif;
+  font-family: CineFindBold, serif;
   z-index: 3;
   height: 100%;
   align-items: center;
@@ -97,10 +121,12 @@ export default {
   transition: all 0.2s ease-in-out;
   background: none;
 }
-.switchLeft:hover, .switchRight:hover{
+
+.switchLeft:hover, .switchRight:hover {
   background: linear-gradient(180deg, hsla(0, 0%, 8%, 0) 0, hsla(0, 0%, 8%, .15) 15%, hsla(0, 0%, 8%, .35) 29%, hsla(0, 0%, 8%, .58) 44%, #141414 90%, #141414);
   font-size: 35px;
 }
+
 .switchLeft {
   left: 0;
   top: 0;
@@ -116,7 +142,7 @@ export default {
   flex-direction: column;
   gap: 20px;
   color: #e3e3e3;
-  font-family: CineFindMedium,serif;
+  font-family: CineFindMedium, serif;
   width: 100%;
   height: 100%;
   margin-left: auto;
@@ -134,9 +160,9 @@ export default {
   padding-left: 75px;
 }
 
-.block-top10 {
+.slide {
   display: flex;
-  gap: 180px;
+  gap: 190px;
   margin-left: auto;
   margin-right: auto;
   width: 90%;
@@ -144,7 +170,7 @@ export default {
   transition: all 0.5s ease-in-out;
 }
 
-.block-top10 img {
+.slide img {
   width: 150px;
   border-radius: 0 10px 10px 0;
   z-index: 1;

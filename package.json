@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@splidejs/splide": "^4.1.4",
+    "@splidejs/vue-splide": "^0.6.12",
+    "lodash": "^4.17.21",
     "process": "^0.11.10",
     "swiper": "^9.1.0",
     "vue": "^3.2.45",

@@ -15,7 +15,7 @@ export default {
     Movies10,
     VideoTrailer,
     MovieList,
-    Header
+    Header,
   },
   data() {
     return {}
