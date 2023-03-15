@@ -3,10 +3,11 @@
     <div class="block-main-moviestop10">
       <h2>Top 10 des films aujourd'hui</h2>
       <div class="slide">
-        <div v-for="(movie, index) in movies" class="content-top10">
-          <svg :id="`item${index}`" width="100%" height="100%" :viewBox="index === 0 ? viewBox[9] : viewBox[index-1]" :class="'svg' + index">
+        <div v-for="(movie, index) in movies" class="content-top10" :id="`movie${index}`">
+          <svg :id="`item${index}`" width="100%" height="100%" :viewBox="index === 0 ? viewBox[9] : viewBox[index-1] || index === 10 ? viewBox[index-1] : viewBox[0]"
+               :class="'svg' + index">
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
-                  :d="index === 0 ? logoNumber[9] : logoNumber[index-1]"></path>
+                  :d="index === 0 ? logoNumber[9] : logoNumber[index-1] || index === 10 ? logoNumber[index-1] : logoNumber[0]"></path>
           </svg>
           <img class="itemPoster" :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
         </div>
@@ -31,7 +32,9 @@ export default {
       countLeft: 0,
       countRight: 0,
       countCallRight: 0,
-      slideIndex: 2,
+      slideIndex: 3,
+      index: 0,
+      i: 0,
     }
   },
   mounted() {
@@ -42,9 +45,11 @@ export default {
   updated() {
     this.sliders = document.querySelectorAll(".slide")[0];
     this.firstItem = document.getElementById("item0").cloneNode();
+    this.i = 0;
   },
   methods: {
-    moveSlides(){
+    moveSlides() {
+      this.index++;
       this.sliders.style.transform = `translateX(-${this.slideIndex * 50}%)`;
       let slideArray = [...this.sliders.querySelectorAll('.content-top10')];
     },
@@ -87,14 +92,24 @@ export default {
     },
     sliderScrollLeft() {
       this.countRight += 85;
-      this.countLeft += 85;
+      this.countLeft += 110;
       this.sliders.style.transform = "translate3d(" + this.countLeft + "%, 0px, 0px)";
       console.log(this.countRight);
       console.log(this.countLeft);
       console.log(this.firstItem);
     },
     sliderScrollRight() {
-      this.moveSlides();
+      this.index++;
+      this.countRight -= 85;
+      this.countLeft -= 110;
+      console.log(this.index);
+      this.sliders.style.transition = "all 0.5s ease-in-out 0s";
+      if (this.index === 2) {
+        this.index = 0;
+        this.sliders.style.transform = "translate3d(" + this.countLeft + "%, 0px, 0px)";
+      } else {
+        this.sliders.style.transform = "translate3d(" + this.countLeft + "%, 0px, 0px)";
+      }
     },
   },
 }
@@ -147,6 +162,7 @@ export default {
   height: 100%;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
   overflow: hidden;
   padding-bottom: 50px;
 }
@@ -163,10 +179,8 @@ export default {
 .slide {
   display: flex;
   gap: 190px;
-  margin-left: auto;
-  margin-right: auto;
   width: 90%;
-  padding-left: 150px;
+
   transition: all 0.5s ease-in-out;
 }
 
