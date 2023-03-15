@@ -4,7 +4,8 @@
       <h2>Top 10 des films aujourd'hui</h2>
       <div class="slide">
         <div v-for="(movie, index) in movies" class="content-top10" :id="`movie${index}`">
-          <svg :id="`item${index}`" width="100%" height="100%" :viewBox="index === 0 ? viewBox[9] : viewBox[index-1] || index === 10 ? viewBox[index-1] : viewBox[0]"
+          <svg :id="`item${index}`" width="100%" height="100%"
+               :viewBox="index === 0 ? viewBox[9] : viewBox[index-1] || index === 10 ? viewBox[index-1] : viewBox[0]"
                :class="'svg' + index">
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="index === 0 ? logoNumber[9] : logoNumber[index-1] || index === 10 ? logoNumber[index-1] : logoNumber[0]"></path>
@@ -14,8 +15,8 @@
 
       </div>
     </div>
-    <a class="switchLeft sliderButton" @click="sliderScrollLeft">&lt;</a>
-    <a class="switchRight sliderButton" @click="sliderScrollRight">></a>
+    <a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>
+    <a class="switchRight sliderButton" @click="sliderScrollRight">❯</a>
   </div>
 </template>
 <script>
@@ -35,6 +36,9 @@ export default {
       slideIndex: 3,
       index: 0,
       i: 0,
+      j: 0,
+      k: 6,
+      move: 0,
     }
   },
   mounted() {
@@ -46,12 +50,14 @@ export default {
     this.sliders = document.querySelectorAll(".slide")[0];
     this.firstItem = document.getElementById("item0").cloneNode();
     this.i = 0;
+    this.placeMovies();
   },
   methods: {
-    moveSlides() {
-      this.index++;
-      this.sliders.style.transform = `translateX(-${this.slideIndex * 50}%)`;
-      let slideArray = [...this.sliders.querySelectorAll('.content-top10')];
+    placeMovies() {
+      for (this.i = 0; this.i < this.movies.length - 1; this.i++) {
+        console.log(document.getElementById("movie" + this.i));
+        document.getElementById("movie" + this.i).style.transform = "translateX(calc("+ 100 +"px + " + this.i * 20 +"rem))";
+      }
     },
     async moviePopular() {
       fetch("https://api.themoviedb.org/3/movie/popular?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
@@ -93,22 +99,21 @@ export default {
     sliderScrollLeft() {
       this.countRight += 85;
       this.countLeft += 110;
-      this.sliders.style.transform = "translate3d(" + this.countLeft + "%, 0px, 0px)";
+      this.sliders.style.transform = "";
       console.log(this.countRight);
       console.log(this.countLeft);
       console.log(this.firstItem);
     },
     sliderScrollRight() {
-      this.index++;
-      this.countRight -= 85;
-      this.countLeft -= 110;
-      console.log(this.index);
-      this.sliders.style.transition = "all 0.5s ease-in-out 0s";
-      if (this.index === 2) {
-        this.index = 0;
-        this.sliders.style.transform = "translate3d(" + this.countLeft + "%, 0px, 0px)";
-      } else {
-        this.sliders.style.transform = "translate3d(" + this.countLeft + "%, 0px, 0px)";
+      for (this.i = 1; this.i < 6; this.i++) {
+        this.k++;
+        document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
+        document.getElementById("movie" + this.i).style.transform = "translateX(calc("+ 100 +"px + " + this.k * 20 +"rem))";
+      }
+      for (this.i = 6; this.i < this.movies.length - 1; this.i++) {
+        this.j++;
+        document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
+        document.getElementById("movie" + this.i).style.transform = "translateX(calc("+ 100 +"px + " + this.j * 20 +"rem))";
       }
     },
   },
@@ -160,10 +165,7 @@ export default {
   font-family: CineFindMedium, serif;
   width: 100%;
   height: 100%;
-  margin-left: auto;
-  margin-right: auto;
   position: relative;
-  overflow: hidden;
   padding-bottom: 50px;
 }
 
@@ -173,15 +175,16 @@ export default {
   text-align: left;
   font-size: 1.4vw;
   line-height: 1.25vw;
-  padding-left: 75px;
 }
 
 .slide {
   display: flex;
-  gap: 190px;
-  width: 90%;
+  gap: 50px;
+  width: 100%;
+  height: 230px;
+  position: relative;
+  border: 1px solid red;
 
-  transition: all 0.5s ease-in-out;
 }
 
 .slide img {
@@ -191,9 +194,11 @@ export default {
 }
 
 .content-top10 {
-  display: flex;
-  position: relative;
-  width: 50%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border: 1px solid green;
+  margin-left: -10rem;
 }
 
 svg {
