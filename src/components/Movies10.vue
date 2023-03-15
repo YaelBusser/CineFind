@@ -115,7 +115,10 @@ export default {
         this.l++;
         if (this.click % 2 === 1) {
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.k * 20 + "rem))";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px - " + this.k * 20 + "rem))";
+          setTimeout(() => {
+            document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.k * 20 + "rem))";
+          }, 1000);
         } else {
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
           document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.l * 20 + "rem))";
@@ -131,7 +134,7 @@ export default {
           document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.j * 20 + "rem))";
         }else{
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.m * 20 + "rem))";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px - " + this.m * 20 + "rem))";
         }
       }
     },
