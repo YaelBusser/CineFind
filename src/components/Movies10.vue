@@ -38,7 +38,9 @@ export default {
       i: 0,
       j: 0,
       k: 6,
-      move: 0,
+      l: 0,
+      m: 0,
+      click: 0,
     }
   },
   mounted() {
@@ -50,13 +52,14 @@ export default {
     this.sliders = document.querySelectorAll(".slide")[0];
     this.firstItem = document.getElementById("item0").cloneNode();
     this.i = 0;
+    this.j = 0;
     this.placeMovies();
   },
   methods: {
     placeMovies() {
-      for (this.i = 0; this.i < this.movies.length - 1; this.i++) {
+      for (this.i = 0; this.i < this.movies.length; this.i++) {
         console.log(document.getElementById("movie" + this.i));
-        document.getElementById("movie" + this.i).style.transform = "translateX(calc("+ 100 +"px + " + this.i * 20 +"rem))";
+        document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.i * 20 + "rem))";
       }
     },
     async moviePopular() {
@@ -100,20 +103,36 @@ export default {
       this.countRight += 85;
       this.countLeft += 110;
       this.sliders.style.transform = "";
-      console.log(this.countRight);
-      console.log(this.countLeft);
-      console.log(this.firstItem);
+
     },
     sliderScrollRight() {
-      for (this.i = 1; this.i < 6; this.i++) {
+      this.click++;
+      console.log(this.click % 2);
+      this.l = 0;
+      this.k = 6;
+      for (this.i = 0; this.i < 6; this.i++) {
         this.k++;
-        document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-        document.getElementById("movie" + this.i).style.transform = "translateX(calc("+ 100 +"px + " + this.k * 20 +"rem))";
+        this.l++;
+        if (this.click % 2 === 1) {
+          document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.k * 20 + "rem))";
+        } else {
+          document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.l * 20 + "rem))";
+        }
       }
-      for (this.i = 6; this.i < this.movies.length - 1; this.i++) {
+      this.m = 6;
+      this.j = 0;
+      for (this.i = 6; this.i < this.movies.length; this.i++) {
         this.j++;
-        document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-        document.getElementById("movie" + this.i).style.transform = "translateX(calc("+ 100 +"px + " + this.j * 20 +"rem))";
+        this.m++;
+        if (this.click % 2 === 1) {
+          document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.j * 20 + "rem))";
+        }else{
+          document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.m * 20 + "rem))";
+        }
       }
     },
   },
