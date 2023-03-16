@@ -59,7 +59,7 @@ export default {
     placeMovies() {
       for (this.i = 0; this.i < this.movies.length; this.i++) {
         console.log(document.getElementById("movie" + this.i));
-        document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.i * 20 + "rem))";
+        document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 75 + "px + " + this.i * 20 + "rem))";
       }
     },
     async moviePopular() {
@@ -114,14 +114,18 @@ export default {
         this.k++;
         this.l++;
         if (this.click % 2 === 1) {
+          //move 5 to left
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px - " + this.k * 20 + "rem))";
-          setTimeout(() => {
-            document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.k * 20 + "rem))";
-          }, 1000);
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 75 + "px - " + this.k * 20 + "rem))";
+          //move 5 to right mais faut trouver un event qui exécute d'abord "move 5 to left" pendant 0.5s
+          // et que j'apparaisse move 5 to right avec une transition 0s
+          //document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
+          //document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.k * 20 + "rem))";
         } else {
+          //move 5 to left from the right
+
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.l * 20 + "rem))";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 75 + "px + " + this.l * 20 + "rem))";
         }
       }
       this.m = 6;
@@ -131,10 +135,10 @@ export default {
         this.m++;
         if (this.click % 2 === 1) {
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.j * 20 + "rem))";
-        }else{
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 200 + "px + " + this.j * 20 + "rem))";
+        } else {
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px - " + this.m * 20 + "rem))";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 200 + "px - " + this.m * 20 + "rem))";
         }
       }
     },
@@ -197,6 +201,7 @@ export default {
   text-align: left;
   font-size: 1.4vw;
   line-height: 1.25vw;
+  padding-left: 75px;
 }
 
 .slide {
