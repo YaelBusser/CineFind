@@ -9,7 +9,7 @@
              :id="`movie${index}`">
           <svg :id="`item${index}`" width="100%" height="100%"
                :viewBox="this.click % 2 === 1 ? viewBox[index] : viewBox[index]"
-               :class="'svg' + index">
+               class="svg">
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="this.click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
@@ -277,6 +277,7 @@ export default {
 
 .slide img {
   width: 150px;
+  height: 100%;
   border-radius: 0 10px 10px 0;
   z-index: 1;
 }
@@ -289,15 +290,9 @@ export default {
 
 svg {
   position: absolute;
-  top: 0;
-  right: 0;
   left: -150px;
-  font-size: 22rem;
-  margin-block-start: 0;
-  margin-block-end: 0;
-  -webkit-text-stroke: 1px rgb(178, 176, 176);
-  color: black;
-  font-family: CineFindLight, serif;
   z-index: 0;
+  top: 0;
+  bottom: 0;
 }
 </style>
