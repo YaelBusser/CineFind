@@ -3,12 +3,15 @@
     <div class="block-main-moviestop10">
       <h2>Top 10 des films aujourd'hui</h2>
       <div class="slide">
-        <div v-for="(movie, index) in movies" class="content-top10" :id="`movie${index}`">
+        <div v-for="(movie, index) in movies" class="content-top10"
+             :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${this.p1}px + ${index * this.p2}px))`
+             : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${this.p5}px + ${index * this.p2}px))` "
+             :id="`movie${index}`">
           <svg :id="`item${index}`" width="100%" height="100%"
-               :viewBox="index === 0 ? viewBox[9] : viewBox[index-1] || index === 10 ? viewBox[index-1] : viewBox[0]"
+               :viewBox="this.click % 2 === 0 ? viewBox[index] : viewBox[index]"
                :class="'svg' + index">
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
-                  :d="index === 0 ? logoNumber[9] : logoNumber[index-1] || index === 10 ? logoNumber[index-1] : logoNumber[0]"></path>
+                  :d="logoNumber[index]"></path>
           </svg>
           <img class="itemPoster" :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
         </div>
@@ -21,6 +24,7 @@
 </template>
 <script>
 import {forEach} from "@splidejs/splide/src/js/utils";
+import {delay} from "lodash";
 
 export default {
   name: "VideoTrailer",
@@ -29,18 +33,17 @@ export default {
       movies: [],
       logoNumber: [],
       viewBox: [],
-      sliders: null,
-      countLeft: 0,
-      countRight: 0,
-      countCallRight: 0,
-      slideIndex: 3,
-      index: 0,
       i: 0,
       j: 0,
       k: 6,
       l: 0,
       m: 0,
       click: 0,
+      p1: 250,
+      p2: 320,
+      p5: 250,
+      transitionTimeP1: 0.5,
+      transitionTimeP2: 0.5,
     }
   },
   mounted() {
@@ -49,17 +52,16 @@ export default {
     this.getViewBox();
   },
   updated() {
-    this.sliders = document.querySelectorAll(".slide")[0];
-    this.firstItem = document.getElementById("item0").cloneNode();
     this.i = 0;
     this.j = 0;
-    this.placeMovies();
   },
   methods: {
-    placeMovies() {
-      for (this.i = 0; this.i < this.movies.length; this.i++) {
-        console.log(document.getElementById("movie" + this.i));
-        document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 75 + "px + " + this.i * 20 + "rem))";
+    moviesPlace() {
+      for (let i = 0; i < 10; i++) {
+        if (document.getElementById("movie" + i)) {
+          document.getElementById("movie" + i).style.transition = "all 0.5s ease-in-out";
+          document.getElementById("movie" + i).style.transform = "translateX(calc(" + 75 + "px + " + i * 20 + "rem))";
+        }
       }
     },
     async moviePopular() {
@@ -67,10 +69,33 @@ export default {
           .then(response => response.json())
           .then(data => {
             data = data.results.slice(0, 10);
-            data.push(data[0]);
-            data.unshift(data[data.length - 2]);
-            console.log(data);
+            //data.push(data[0]);
+            //data.unshift(data[data.length - 2]);
             this.movies = data;
+          }).catch(error => {
+        console.log(error);
+      });
+    },
+    async moviePopularAddFromTo5() {
+      fetch("https://api.themoviedb.org/3/movie/popular?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
+          .then(response => response.json())
+          .then(data => {
+            for (this.i = 0; this.i < 5; this.i++) {
+              this.movies.push(data.results[this.i]);
+            }
+          }).catch(error => {
+        console.log(error);
+      });
+    },
+    async moviePopularAdd5toEnd() {
+      fetch("https://api.themoviedb.org/3/movie/popular?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
+          .then(response => response.json())
+          .then(data => {
+            data = data.results;
+            for (this.i = 5; this.i < 10; this.i++) {
+              this.movies.push(data[this.i]);
+            }
+            console.log(this.movies);
           }).catch(error => {
         console.log(error);
       });
@@ -103,47 +128,57 @@ export default {
       this.countRight += 85;
       this.countLeft += 110;
       this.sliders.style.transform = "";
-
     },
-    sliderScrollRight() {
+    async sliderScrollRight() {
       this.click++;
-      console.log(this.click % 2);
-      this.l = 0;
-      this.k = 6;
-      for (this.i = 0; this.i < 6; this.i++) {
-        this.k++;
-        this.l++;
-        if (this.click % 2 === 1) {
-          //move 5 to left
-          document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 75 + "px - " + this.k * 20 + "rem))";
-          //move 5 to right mais faut trouver un event qui exécute d'abord "move 5 to left" pendant 0.5s
-          // et que j'apparaisse move 5 to right avec une transition 0s
-          //document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          //document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 100 + "px + " + this.k * 20 + "rem))";
-        } else {
-          //move 5 to left from the right
+      if (this.click % 2 === 1) {
+        this.transitionTimeP1 = 0.5;
+        this.p1 = -1450;
+        this.p5 = -1350;
+        this.transitionTimeP2 = 0.5;
+        setTimeout(() => {
+          this.moviePopularAddFromTo5();
+          this.transitionTimeP1 = 0;
+          this.p1 = 250;
+          this.p5 = 250;
+          for (this.i = 5; this.i < 10; this.i++) {
+            this.movies.shift();
+          }
+        }, 420);
 
-          document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 75 + "px + " + this.l * 20 + "rem))";
-        }
+
+      } else {
+        this.transitionTimeP1 = 0.5;
+        this.p1 = -1450;
+        this.p5 = -1350;
+        setTimeout(() => {
+          this.moviePopularAdd5toEnd();
+          this.transitionTimeP1 = 0;
+          this.p1 = 250;
+          this.p5 = 250;
+          for (this.i = 5; this.i < 10; this.i++) {
+            this.movies.shift();
+          }
+        }, 420);
+
       }
-      this.m = 6;
+      /*this.m = 6;
       this.j = 0;
-      for (this.i = 6; this.i < this.movies.length; this.i++) {
+      for (this.i = 0; this.i < 5; this.i++) {
         this.j++;
         this.m++;
         if (this.click % 2 === 1) {
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 200 + "px + " + this.j * 20 + "rem))";
+          document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 75 + "px + " + this.j * 20 + "rem))";
         } else {
           document.getElementById("movie" + this.i).style.transition = "all 0.5s ease-in-out";
           document.getElementById("movie" + this.i).style.transform = "translateX(calc(" + 200 + "px - " + this.m * 20 + "rem))";
         }
-      }
+      }*/
     },
   },
 }
+
 </script>
 <style scoped>
 .container {
@@ -225,7 +260,6 @@ export default {
   top: 0;
   bottom: 0;
   border: 1px solid green;
-  margin-left: -10rem;
 }
 
 svg {
