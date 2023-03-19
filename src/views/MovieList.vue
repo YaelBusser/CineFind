@@ -197,7 +197,7 @@ export default {
 </script>
 <style scoped>
 .block-movieList {
-  margin-top: 10rem;
+
 }
 
 .descriptionMovieSkeleton {

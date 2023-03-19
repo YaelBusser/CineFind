@@ -1,8 +1,12 @@
 <template>
-  <VideoTrailer>
-    <Movies10/>
-  </VideoTrailer>
+  <div class="videoTrailer">
+    <VideoTrailer>
+      <Movies10/>
+    </VideoTrailer>s
+  </div>
+  <div class="block-list">
   <MovieList></MovieList>
+  </div>
 </template>
 <script>
 import Header from "../components/Header.vue";
@@ -23,4 +27,13 @@ export default {
 }
 </script>
 <style scoped>
+.videoTrailer {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.block-list{
+  margin-top: 100vh;
+}
 </style>

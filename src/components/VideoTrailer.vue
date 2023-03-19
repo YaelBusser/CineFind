@@ -59,25 +59,25 @@ export default {
 </script>
 <style scoped>
 iframe {
-  margin-top: -7px;
-  clip-path: inset(120px 0);
   border: none;
+  transform: scale(1.5);
   width: 100%;
   height: 100vh;
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
-  top: 0;
+  bottom: 0;
   pointer-events: none;
-  transform: scale(1.33);
-  object-fit: cover;
-  background: linear-gradient(77deg, rgba(0, 0, 0, .6), transparent 85%);
+  border: 1px solid yellow;
 
 }
 
 .block-video {
   width: 100%;
   height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
 .bg-overlay {
