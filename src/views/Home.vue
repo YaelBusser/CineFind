@@ -2,7 +2,7 @@
   <div class="videoTrailer">
     <VideoTrailer>
       <Movies10/>
-    </VideoTrailer>s
+    </VideoTrailer>
   </div>
   <div class="block-list">
   <MovieList></MovieList>
@@ -34,6 +34,6 @@ export default {
   top: 0;
 }
 .block-list{
-  margin-top: 100vh;
+  margin-top: 150vh;
 }
 </style>

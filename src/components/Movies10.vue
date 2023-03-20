@@ -3,19 +3,47 @@
     <div class="block-main-moviestop10">
       <h2>Top 10 des films aujourd'hui</h2>
       <div class="slide">
-        <div v-for="(movie, index) in movies" class="content-top10"
-             :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${this.p1}px + ${index * this.p2}px))`
-             : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${this.p5}px + ${index * this.p2}px))` "
+        <!--<div v-for="(movie, index) in movies" class="content-top10"
+             :style="index === 9 ? `transition: all ${transitionTimeP3}s ease-in-out; transform: translateX(${p10}px)`
+             : `display: none;` "
              :id="`movie${index}`">
-          <svg :id="`item${index}`" width="100%" height="100%"
-               :viewBox="this.click % 2 === 1 ? viewBox[index] : viewBox[index]"
-                   class="svg">
+          <svg :id="`item${index}`" width="100%" height="100%" v-if="index === 9"
+               :viewBox="click % 2 === 1 ? viewBox[index] : viewBox[index]"
+               class="svg">
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
-                  :d="this.click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
+                  :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
           <img class="itemPoster" :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
+        </div>-->
+        <div v-for="(movie, index) in movies" class="content-top10"
+             :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${p1}vw + ${index * p2}vw))`
+             : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${p5}vw + ${index * p2}vw))` "
+             :id="`movie${index}`">
+          <svg :id="`item${index}`" width="100%" height="100%"
+               :viewBox="click % 2 === 1 ? viewBox[index] : viewBox[index]"
+               class="svg">
+            <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
+                  :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
+          </svg>
+          <img class="itemPoster"
+               @mouseover="idVideoCard = movie.id; showCardMovie = true; idMovieHover = index; getVideoCard()"
+               :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
+          <div v-if="showCardMovie && idMovieHover === index" class="cardMovie" onmouseleave="showCardMovie = false;"
+               @mouseleave="showCardMovie = false"
+          >
+            <iframe
+                :src="videoUrl()"
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+            <div class="parent-block-btn">
+              <div class="block-btn">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>Plus d'infos</p>
+              </div>
+            </div>
+          </div>
         </div>
-
       </div>
     </div>
     <a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>
@@ -30,23 +58,23 @@ export default {
   name: "VideoTrailer",
   data() {
     return {
+      idVideoCard: 0,
+      videoCard: [],
+      srcVideo: null,
+      showCardMovie: false,
+      idMovieHover: null,
       movies: [],
       logoNumber: [],
       viewBox: [],
       i: 0,
-      j: 0,
-      k: 6,
-      l: 0,
-      m: 0,
       click: 0,
-      p1: 250,
-      p2: 320,
-      p3: -1000,
-      p5: 250,
+      p1: 20,
+      p5: 20,
+      p10: 250,
+      p2: 17,
       transitionTimeP1: 0.5,
       transitionTimeP2: 0.5,
-      number5First: [],
-      number5Last: [],
+      transitionTimeP3: 0.5,
       logoNumber1: "M35.377 152H72V2.538L2 19.362v30.341l33.377-8.459V152z",
       logoNumber2: "M3.72 152H113v-30.174H50.484l4.355-3.55 29.453-24.012c5.088-4.124 9.748-8.459 13.983-13.004 4.16-4.464 7.481-9.339 9.972-14.629 2.449-5.203 3.678-11.113 3.678-17.749 0-9.428-2.294-17.627-6.875-24.645-4.597-7.042-10.941-12.494-19.07-16.376C77.803 3.957 68.496 2 58.036 2 47.591 2 38.37 4.023 30.347 8.06c-8.015 4.032-14.457 9.578-19.352 16.654-4.492 6.493-7.389 13.803-8.693 21.952h34.055c1.236-3.52 3.398-6.52 6.459-8.97 3.54-2.834 8.277-4.224 14.147-4.224 5.93 0 10.552 1.537 13.76 4.681 3.181 3.12 4.791 7.024 4.791 11.594 0 4.151-1.16 7.934-3.468 11.298-2.192 3.194-5.987 7.124-11.405 11.84L3.72 122.465V152z",
       logoNumber3: "M 3.809 41.577 h 33.243 c 1.3 -2.702 3.545 -4.947 6.674 -6.72 c 3.554 -2.015 7.83 -3.01 12.798 -3.01 c 5.555 0 10.14 1.11 13.723 3.376 c 3.839 2.427 5.782 6.283 5.782 11.315 c 0 4.553 -1.853 8.395 -5.473 11.38 c -3.547 2.926 -8.18 4.37 -13.821 4.37 H 41.44 v 28.366 h 16.77 c 5.572 0 10.275 1.227 14.068 3.711 c 4.02 2.633 6.071 6.581 6.071 11.616 c 0 5.705 -1.943 9.975 -5.853 12.562 c -3.658 2.42 -8.292 3.61 -13.863 3.61 c -5.205 0 -9.82 -0.94 -13.827 -2.836 c -3.698 -1.75 -6.32 -4.272 -7.785 -7.529 H 2.33 c 2.096 12.089 7.761 21.65 17.028 28.78 C 29.242 148.175 42.594 152 59.476 152 c 10.706 0 20.175 -1.783 28.42 -5.337 c 8.185 -3.528 14.575 -8.486 19.208 -14.884 c 4.595 -6.346 6.896 -13.938 6.896 -22.837 c 0 -6.952 -1.93 -13.494 -5.81 -19.666 c -3.815 -6.07 -9.68 -10.367 -17.683 -12.908 l -5.46 -1.735 l 5.353 -2.04 c 6.659 -2.538 11.667 -6.338 15.083 -11.412 c 3.431 -5.096 5.142 -10.806 5.142 -17.181 c 0 -8.471 -2.262 -15.778 -6.787 -21.985 c -4.574 -6.275 -10.7 -11.17 -18.408 -14.696 C 77.683 3.775 69.109 2 59.687 2 C 44.084 2 31.515 5.816 21.91 13.415 c -9 7.119 -15.025 16.486 -18.101 28.162 Z",
@@ -71,30 +99,48 @@ export default {
   },
   mounted() {
     this.moviePopular();
+    this.moviePopular2();
     this.getNumber();
     this.getViewBox();
-  },
-  updated() {
-    this.i = 0;
-    this.j = 0;
+    this.placeMovies();
   },
   methods: {
-    moviesPlace() {
-      for (let i = 0; i < 10; i++) {
-        if (document.getElementById("movie" + i)) {
-          document.getElementById("movie" + i).style.transition = "all 0.5s ease-in-out";
-          document.getElementById("movie" + i).style.transform = "translateX(calc(" + 75 + "px + " + i * 20 + "rem))";
-        }
+    async getVideoCard() {
+      fetch(`https://api.themoviedb.org/3/movie/${this.idVideoCard}/videos?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+          .then(response => response.json())
+          .then(data => {
+            this.videoCard = data.results;
+          }).catch(error => {
+        console.log(error);
+      });
+      console.log(this.idVideoCard);
+    },
+    videoUrl() {
+      if (this.videoCard.length > 0) {
+        const videoKey = this.videoCard[0].key;
+        return `https://www.youtube.com/embed/${videoKey}?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=${videoKey}`;
       }
+      return "";
+    },
+    async placeMovies() {
+      this.p10 = -70;
     },
     async moviePopular() {
       fetch("https://api.themoviedb.org/3/movie/popular?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
           .then(response => response.json())
           .then(data => {
             data = data.results.slice(0, 10);
-            //data.push(data[0]);
-            //data.unshift(data[data.length - 2]);
             this.movies = data;
+          }).catch(error => {
+        console.log(error);
+      });
+    },
+    async moviePopular2() {
+      fetch("https://api.themoviedb.org/3/movie/popular?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
+          .then(response => response.json())
+          .then(data => {
+            data = data.results.slice(0, 10);
+            this.movies2 = data;
           }).catch(error => {
         console.log(error);
       });
@@ -118,7 +164,6 @@ export default {
             for (this.i = 5; this.i < 10; this.i++) {
               this.movies.push(data[this.i]);
             }
-            console.log(this.movies);
           }).catch(error => {
         console.log(error);
       });
@@ -147,13 +192,16 @@ export default {
       this.logoNumber.push(this.logoNumber9);
       this.logoNumber.push(this.logoNumber10);
     },
-    sliderScrollLeft() {
+    async sliderScrollLeft() {
+      /*
       this.click++;
       if (this.click % 2 === 1) {
         this.transitionTimeP1 = 0.5;
+        this.transitionTimeP2 = 0;
+        this.transitionTimeP3 = 0.5;
         this.p1 = 1900;
-        this.p5 = 1450;
-        this.transitionTimeP2 = 0.5;
+        this.p5 = -3100;
+        this.p10 = 1500;
         setTimeout(() => {
           this.logoNumber.splice(0, 5);
           this.logoNumber.push(this.logoNumber1);
@@ -161,7 +209,6 @@ export default {
           this.logoNumber.push(this.logoNumber3);
           this.logoNumber.push(this.logoNumber4);
           this.logoNumber.push(this.logoNumber5);
-
           this.viewBox.splice(0, 5);
           this.viewBox.push(this.viewBox1);
           this.viewBox.push(this.viewBox2);
@@ -170,16 +217,24 @@ export default {
           this.viewBox.push(this.viewBox5);
           this.moviePopularAddFromTo5();
           this.transitionTimeP1 = 0;
-          this.p1 = 250;
+          this.transitionTimeP2 = 0.5;
           this.p5 = 250;
+          this.p1 = -3000;
+          this.p10 = -70;
           for (this.i = 5; this.i < 10; this.i++) {
             this.movies.shift();
           }
+          setTimeout(() => {
+            this.transitionTimeP1 = 0.5;
+            this.p1 = 250;
+          }, 50);
         }, 420);
       } else {
         this.transitionTimeP1 = 0.5;
+        this.transitionTimeP2 = 0;
         this.p1 = 1900;
-        this.p5 = 1450;
+        this.p5 = -3000;
+        this.p10 = -1450;
         setTimeout(() => {
           this.logoNumber.splice(0, 5);
           this.logoNumber.push(this.logoNumber6);
@@ -187,30 +242,36 @@ export default {
           this.logoNumber.push(this.logoNumber8);
           this.logoNumber.push(this.logoNumber9);
           this.logoNumber.push(this.logoNumber10);
-
-          this.viewBox.splice(0, 5)
+          this.viewBox.splice(0, 5);
           this.viewBox.push(this.viewBox6);
           this.viewBox.push(this.viewBox7);
           this.viewBox.push(this.viewBox8);
           this.viewBox.push(this.viewBox9);
           this.viewBox.push(this.viewBox10);
-
           this.moviePopularAdd5toEnd();
           this.transitionTimeP1 = 0;
-          this.p1 = 250;
+          this.transitionTimeP2 = 0.5;
           this.p5 = 250;
+          this.p1 = -3000;
+          this.p10 = -70;
           for (this.i = 5; this.i < 10; this.i++) {
             this.movies.shift();
           }
+          setTimeout(() => {
+            this.transitionTimeP1 = 0.5;
+            this.p1 = 250;
+          }, 50);
         }, 420);
-      }
+      }*/
     },
     async sliderScrollRight() {
       this.click++;
+      this.transitionTimeP3 = 0.5;
       if (this.click % 2 === 1) {
         this.transitionTimeP1 = 0.5;
-        this.p1 = -1450;
-        this.p5 = -1350;
+        this.p1 = -100;
+        this.p5 = -68.5;
+        this.p10 = -20;
         this.transitionTimeP2 = 0.5;
         setTimeout(() => {
           this.logoNumber.splice(0, 5);
@@ -219,26 +280,26 @@ export default {
           this.logoNumber.push(this.logoNumber3);
           this.logoNumber.push(this.logoNumber4);
           this.logoNumber.push(this.logoNumber5);
-
           this.viewBox.splice(0, 5);
           this.viewBox.push(this.viewBox1);
           this.viewBox.push(this.viewBox2);
           this.viewBox.push(this.viewBox3);
           this.viewBox.push(this.viewBox4);
           this.viewBox.push(this.viewBox5);
-
           this.moviePopularAddFromTo5();
           this.transitionTimeP1 = 0;
-          this.p1 = 300;
-          this.p5 = 250;
+          this.p1 = 20;
+          this.p5 = 20;
+          this.p10 = -70;
           for (this.i = 5; this.i < 10; this.i++) {
             this.movies.shift();
           }
         }, 420);
       } else {
         this.transitionTimeP1 = 0.5;
-        this.p1 = -1450;
-        this.p5 = -1350;
+        this.p1 = -100;
+        this.p5 = -68;
+        this.p10 = -20;
         setTimeout(() => {
           this.logoNumber.splice(0, 5);
           this.logoNumber.push(this.logoNumber6);
@@ -246,18 +307,17 @@ export default {
           this.logoNumber.push(this.logoNumber8);
           this.logoNumber.push(this.logoNumber9);
           this.logoNumber.push(this.logoNumber10);
-
           this.viewBox.splice(0, 5)
           this.viewBox.push(this.viewBox6);
           this.viewBox.push(this.viewBox7);
           this.viewBox.push(this.viewBox8);
           this.viewBox.push(this.viewBox9);
           this.viewBox.push(this.viewBox10);
-
           this.moviePopularAdd5toEnd();
           this.transitionTimeP1 = 0;
-          this.p1 = 300;
-          this.p5 = 250;
+          this.p1 = 20;
+          this.p5 = 20;
+          this.p10 = -70;
           for (this.i = 5; this.i < 10; this.i++) {
             this.movies.shift();
           }
@@ -269,6 +329,60 @@ export default {
 
 </script>
 <style scoped>
+.parent-block-btn{
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 0;
+  height: 12vh;
+}
+.block-btn {
+  width: 10vw;
+  height: 6vh;
+  font-size: 1vw;
+  background-color: rgba(109, 109, 110, 0.7);
+  color: white;
+  font-family: CineFindMedium, serif;
+  border: none;
+  transition: all ease-in-out 0.2s;
+  cursor: pointer;
+  border-radius: 10px 10px 10px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.block-btn:hover {
+  background-color: rgba(78, 78, 79, 0.7);
+}
+
+iframe {
+  border: none;
+  clip-path: inset(2vw 0vw);
+  transform: scale(2.2);
+  width: 15vw;
+  height: 20vh;
+  pointer-events: none;
+}
+
+.cardMovie {
+  width: 25vw;
+  height: 35vh;
+  position: absolute;
+  top: -2vw;
+  left: -10vw;
+  border-radius: 10px 10px 10px 10px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  z-index: 50;
+  transition: all ease-in-out 0.5s;
+}
+
 .container {
   margin-top: 200px;
   position: relative;
@@ -316,6 +430,7 @@ export default {
   height: 100%;
   position: relative;
   padding-bottom: 50px;
+  overflow: hidden;
 }
 
 .block-main-moviestop10 h2 {
@@ -330,14 +445,13 @@ export default {
 .slide {
   display: flex;
   gap: 50px;
-  width: 100%;
-  height: 230px;
+  width: 100vw;
+  height: 25vh;
   position: relative;
-  overflow: hidden;
 }
 
 .slide img {
-  width: 150px;
+  width: 7.8vw;
   height: 100%;
   border-radius: 0 10px 10px 0;
   z-index: 1;
@@ -351,7 +465,7 @@ export default {
 
 svg {
   position: absolute;
-  left: -150px;
+  left: -7.8vw;
   z-index: 0;
   top: 0;
   bottom: 0;

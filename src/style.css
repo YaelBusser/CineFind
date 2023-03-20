@@ -36,14 +36,9 @@ a:hover {
 
 body {
     margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
+    min-width: 100%;
     width: 100%;
-    min-height: 100vh;
-    background-color: #141414;
-    color: #333;
-    transition: all 0.2s ease-in-out;
+    background-color: #141414!important;
     overflow-x: hidden;
     scroll-behavior: smooth;
 }
