@@ -67,8 +67,8 @@ export default {
       viewBox: [],
       i: 0,
       click: 0,
-      p1: 20,
-      p5: 20,
+      p1: 15,
+      p5: 15,
       p10: 250,
       p2: 17,
       transitionTimeP1: 0.5,
@@ -192,135 +192,23 @@ export default {
       this.logoNumber.push(this.logoNumber10);
     },
     async sliderScrollLeft() {
-      /*
       this.click++;
-      if (this.click % 2 === 1) {
-        this.transitionTimeP1 = 0.5;
-        this.transitionTimeP2 = 0;
-        this.transitionTimeP3 = 0.5;
-        this.p1 = 1900;
-        this.p5 = -3100;
-        this.p10 = 1500;
-        setTimeout(() => {
-          this.logoNumber.splice(0, 5);
-          this.logoNumber.push(this.logoNumber1);
-          this.logoNumber.push(this.logoNumber2);
-          this.logoNumber.push(this.logoNumber3);
-          this.logoNumber.push(this.logoNumber4);
-          this.logoNumber.push(this.logoNumber5);
-          this.viewBox.splice(0, 5);
-          this.viewBox.push(this.viewBox1);
-          this.viewBox.push(this.viewBox2);
-          this.viewBox.push(this.viewBox3);
-          this.viewBox.push(this.viewBox4);
-          this.viewBox.push(this.viewBox5);
-          this.moviePopularAddFromTo5();
-          this.transitionTimeP1 = 0;
-          this.transitionTimeP2 = 0.5;
-          this.p5 = 250;
-          this.p1 = -3000;
-          this.p10 = -70;
-          for (this.i = 5; this.i < 10; this.i++) {
-            this.movies.shift();
-          }
-          setTimeout(() => {
-            this.transitionTimeP1 = 0.5;
-            this.p1 = 250;
-          }, 50);
-        }, 420);
-      } else {
-        this.transitionTimeP1 = 0.5;
-        this.transitionTimeP2 = 0;
-        this.p1 = 1900;
-        this.p5 = -3000;
-        this.p10 = -1450;
-        setTimeout(() => {
-          this.logoNumber.splice(0, 5);
-          this.logoNumber.push(this.logoNumber6);
-          this.logoNumber.push(this.logoNumber7);
-          this.logoNumber.push(this.logoNumber8);
-          this.logoNumber.push(this.logoNumber9);
-          this.logoNumber.push(this.logoNumber10);
-          this.viewBox.splice(0, 5);
-          this.viewBox.push(this.viewBox6);
-          this.viewBox.push(this.viewBox7);
-          this.viewBox.push(this.viewBox8);
-          this.viewBox.push(this.viewBox9);
-          this.viewBox.push(this.viewBox10);
-          this.moviePopularAdd5toEnd();
-          this.transitionTimeP1 = 0;
-          this.transitionTimeP2 = 0.5;
-          this.p5 = 250;
-          this.p1 = -3000;
-          this.p10 = -70;
-          for (this.i = 5; this.i < 10; this.i++) {
-            this.movies.shift();
-          }
-          setTimeout(() => {
-            this.transitionTimeP1 = 0.5;
-            this.p1 = 250;
-          }, 50);
-        }, 420);
-      }*/
+      if(this.click % 2 === 1){
+        this.p1 = -70;
+        this.p5 = -70;
+      }else {
+        this.p1 = 15;
+        this.p5 = 15;
+      }
     },
     async sliderScrollRight() {
       this.click++;
-      this.transitionTimeP3 = 0.5;
-      if (this.click % 2 === 1) {
-        this.transitionTimeP1 = 0.5;
-        this.p1 = -100;
-        this.p5 = -68.5;
-        this.p10 = -20;
-        this.transitionTimeP2 = 0.5;
-        setTimeout(() => {
-          this.logoNumber.splice(0, 5);
-          this.logoNumber.push(this.logoNumber1);
-          this.logoNumber.push(this.logoNumber2);
-          this.logoNumber.push(this.logoNumber3);
-          this.logoNumber.push(this.logoNumber4);
-          this.logoNumber.push(this.logoNumber5);
-          this.viewBox.splice(0, 5);
-          this.viewBox.push(this.viewBox1);
-          this.viewBox.push(this.viewBox2);
-          this.viewBox.push(this.viewBox3);
-          this.viewBox.push(this.viewBox4);
-          this.viewBox.push(this.viewBox5);
-          this.moviePopularAddFromTo5();
-          this.transitionTimeP1 = 0;
-          this.p1 = 20;
-          this.p5 = 20;
-          this.p10 = -70;
-          for (this.i = 5; this.i < 10; this.i++) {
-            this.movies.shift();
-          }
-        }, 420);
-      } else {
-        this.transitionTimeP1 = 0.5;
-        this.p1 = -100;
-        this.p5 = -68;
-        this.p10 = -20;
-        setTimeout(() => {
-          this.logoNumber.splice(0, 5);
-          this.logoNumber.push(this.logoNumber6);
-          this.logoNumber.push(this.logoNumber7);
-          this.logoNumber.push(this.logoNumber8);
-          this.logoNumber.push(this.logoNumber9);
-          this.logoNumber.push(this.logoNumber10);
-          this.viewBox.splice(0, 5)
-          this.viewBox.push(this.viewBox6);
-          this.viewBox.push(this.viewBox7);
-          this.viewBox.push(this.viewBox8);
-          this.viewBox.push(this.viewBox9);
-          this.viewBox.push(this.viewBox10);
-          this.moviePopularAdd5toEnd();
-          this.transitionTimeP1 = 0;
-          this.p1 = 20;
-          this.p5 = 20;
-          this.p10 = -70;
-          for (this.i = 5; this.i < 10; this.i++) {
-            this.movies.shift();
-          }
-        }, 420);
+      if(this.click % 2 === 1){
+      this.p1 = -70;
+      this.p5 = -70;
+      }else {
+        this.p1 = 15;
+        this.p5 = 15;
       }
     },
   },

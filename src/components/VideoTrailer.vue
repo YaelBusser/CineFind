@@ -77,7 +77,7 @@ export default {
         this.widthTitleMovie = 25;
         this.positionBlockTitle = -document.getElementById("blockTitleTop10").clientHeight;
         this.positionOverview = -document.getElementById("idDescription").clientHeight;
-      }, 5000);
+      }, 7000);
       console.log(document.getElementById("idDescription").clientHeight);
     },
     getDescTheMovie() {
