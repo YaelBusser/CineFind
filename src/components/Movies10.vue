@@ -15,7 +15,7 @@
           </svg>
           <img class="itemPoster" :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
         </div>-->
-        <div v-for="(movie, index) in movies" class="content-top10"
+        <div v-for="(movie, index) in movies" class="content-top10" @mouseover="idVideoCard = movie.id; showCardMovie = true; idMovieHover = index; getVideoCard()"
              :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${p1}vw + ${index * p2}vw))`
              : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${p5}vw + ${index * p2}vw))` "
              :id="`movie${index}`">
@@ -26,7 +26,6 @@
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
           <img class="itemPoster"
-               @mouseover="idVideoCard = movie.id; showCardMovie = true; idMovieHover = index; getVideoCard()"
                :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
           <div v-if="showCardMovie && idMovieHover === index" class="cardMovie" onmouseleave="showCardMovie = false;"
                @mouseleave="showCardMovie = false"
