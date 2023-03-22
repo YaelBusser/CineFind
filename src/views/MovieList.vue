@@ -21,8 +21,7 @@
         <div v-for="i in 20">
           <div class="movieListSkeleton">
             <div class="voteAverageSkeleton"></div>
-            <div class="descriptionMovieSkeleton">
-            </div>
+            <div class="descriptionMovieSkeleton"></div>
           </div>
         </div>
       </div>
@@ -39,7 +38,7 @@
               <div class="container-descriptionMovie-p">
                 <p>{{ movie.title }}</p>
               </div>
-              <button :class="showDetails === movie.id ? 'buttonOn' : 'buttonOff'">Détails</button>
+              <button :class="showDetails === movie.id ? 'buttonOn' : 'buttonOff'" @click="showMovieInfos(movie.id); idMovie = movie.id">Détails</button>
             </div>
           </div>
         </div>
@@ -62,15 +61,18 @@
 </template>
 <script>
 import Header from "../components/Header.vue";
+import DetailsById from "../components/detailsById.vue";
 
 export default {
   components: {
+    DetailsById,
     Header
   },
   data() {
     return {
       movies: [],
       moviesOk: [],
+      idMovie: null,
       showDetails: -1,
       isSearching: false,
       queryMovie: "",
@@ -82,6 +84,7 @@ export default {
       pageNext: 2,
       resultats: "",
       requestMovieList: "",
+      path: `/search?q=${this.idMovie}`
     }
   },
   async created() {
@@ -105,6 +108,9 @@ export default {
       } else {
         await this.movieListPop();
       }
+    },
+    showMovieInfos(cardId) {
+      this.$router.push({path: this.$route.path, query: {q: cardId}});
     },
     async movieListSearch() {
       this.isSearching = true;

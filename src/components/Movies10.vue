@@ -36,7 +36,7 @@
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
             <div class="parent-block-btn">
-              <div class="block-btn">
+              <div class="block-btn" @click="showMovieInfos">
                 <i class="fa-solid fa-circle-info"></i>
                 <p>Plus d'infos</p>
               </div>
@@ -57,6 +57,7 @@ export default {
   name: "VideoTrailer",
   data() {
     return {
+      showBlockMovieInfos: false,
       idVideoCard: 0,
       videoCard: [],
       srcVideo: null,
@@ -104,6 +105,9 @@ export default {
     this.placeMovies();
   },
   methods: {
+    showMovieInfos() {
+      this.$emit('card-movie-little', this.idVideoCard);
+    },
     async getVideoCard() {
       fetch(`https://api.themoviedb.org/3/movie/${this.idVideoCard}/videos?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
           .then(response => response.json())
@@ -112,7 +116,6 @@ export default {
           }).catch(error => {
         console.log(error);
       });
-      console.log(this.idVideoCard);
     },
     videoUrl() {
       if (this.videoCard.length > 0) {

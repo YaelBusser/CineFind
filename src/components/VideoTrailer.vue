@@ -9,7 +9,8 @@
       <div class="info-movie-txt">
         <h2 :style="`width: ${widthTitleMovie}vw; font-size: ${heightTitle}vw;margin-bottom: ${positionTitle}`">
           {{ theMovie.title }}</h2>
-        <div class="block-titleTop10" :style="`opacity: ${opacityTop10}; margin-bottom: ${positionBlockTitle}px`" id="blockTitleTop10">
+        <div class="block-titleTop10" :style="`opacity: ${opacityTop10}; margin-bottom: ${positionBlockTitle}px`"
+             id="blockTitleTop10">
           <svg viewBox="0 0 28 30" class="svg-icon svg-icon-top-10-badge">
             <rect x="0" width="28" height="30" rx="3" fill="#e50914"></rect>
             <path
@@ -31,8 +32,7 @@
         <p class="description" id="idDescription"
            :style="`font-size; opacity: ${opacityDesc}; margin-bottom: ${positionOverview}px;`">{{ overview }}.</p>
       </div>
-
-      <div class="block-btn">
+      <div class="block-btn" @click="showMovieInfos">
         <i class="fa-solid fa-circle-info"></i>
         <p>Plus d'infos</p>
       </div>
@@ -62,12 +62,19 @@ export default {
       opacityTop10: 1,
       heightTitle: 5,
       widthTitleMovie: 50,
+      showBlockMovieInfos: false,
+      idMovie: null,
     }
   },
   updated() {
     this.getDescTheMovie();
   },
+  emits: ['card-movie'],
   methods: {
+    showMovieInfos() {
+      this.idMovie = this.theMovie.id;
+      this.$emit('card-movie', this.idMovie);
+    },
     positionDescTheMovie() {
       setTimeout(() => {
         this.positionTitle = 0;
@@ -78,7 +85,6 @@ export default {
         this.positionBlockTitle = -document.getElementById("blockTitleTop10").clientHeight;
         this.positionOverview = -document.getElementById("idDescription").clientHeight;
       }, 7000);
-      console.log(document.getElementById("idDescription").clientHeight);
     },
     getDescTheMovie() {
       this.overview = this.theMovie.overview.substring(0, this.theMovie.overview.indexOf("."));
@@ -111,7 +117,7 @@ export default {
         return `https://www.youtube.com/embed/${videoKey}?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=${videoKey}`;
       }
       return "";
-    }
+    },
   },
   mounted() {
     this.moviePopular();
@@ -120,6 +126,7 @@ export default {
 }
 </script>
 <style scoped>
+
 .block-titleTop10 {
   display: flex;
   gap: 1vw;

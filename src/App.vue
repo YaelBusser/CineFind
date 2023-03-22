@@ -5,10 +5,17 @@
 </template>
 <script>
 import Header from "./components/Header.vue";
+import VideoTrailer from "./components/Movies10.vue";
 
 export default {
   components: {
+    VideoTrailer,
     Header,
+  },
+  data(){
+    return{
+
+    }
   },
   methods: {
     searchMovie(searchText) {

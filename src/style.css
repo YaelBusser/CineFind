@@ -162,3 +162,75 @@ button:focus{
 .itemPoster:hover{
     transform: scale(1.2);
 }
+.card-top{
+    position: relative;
+}
+.card-top h2{
+    position: absolute;
+    color: white;
+    font-size: 2vw;
+    top: 25vh;
+    left: 2vw;
+}
+.overlay-cardMovieInfos {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 101;
+}
+
+.videoCardMovie {
+    border: none;
+    transform: scale(1);
+    clip-path: inset(13.8vw 0px);
+    width: 100%;
+    position: absolute;
+    top: -14vw;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.card-movieInfos {
+    width: 50vw;
+    height: 80vh;
+    background-color: #181818;
+    z-index: 101;
+    border-radius: 10px 10px 10px 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-movieInfos i {
+    position: absolute;
+    right: 1vw;
+    top: 1vw;
+    z-index: 102;
+    font-size: 1.8vw;
+    width: 1.8vw;
+    height: 1.7vw;
+    color: white;
+    background-color: #181818;
+    border-radius: 100%;
+    cursor: pointer;
+    transition: all ease-in-out 0.2s;
+}
+
+.card-movieInfos i:hover {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.block-movieInfos {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
