@@ -1,5 +1,5 @@
 <template>
-  <div class="block-movieInfos" v-if="this.$route.query.details">
+  <div class="block-movieInfos" v-if="this.$route.query.details || this.$route.query.detailsSerie">
     <div class="overlay-cardMovieInfos" @click="this.$router.replace({path: `${path}`});"></div>
     <div class="card-movieInfos">
       <i class="fa-solid fa-circle-xmark" @click="this.$router.replace({path: `${path}`});"></i>
@@ -10,7 +10,7 @@
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowfullscreen></iframe>
-        <h2>{{ this.details.title }}</h2>
+        <h2>{{ title }}</h2>
         <div class="block-infos">
           <div class="container-infos">
             <p class="description">{{ this.details.overview }}</p>
@@ -35,6 +35,9 @@ export default {
     return {
       details: [],
       srcVideo: [],
+      api: "",
+      routeApi: "",
+      title: "",
     }
   },
   watch: {
@@ -48,21 +51,40 @@ export default {
   },
   methods: {
     async getDetailsMovie() {
-      fetch(`https://api.themoviedb.org/3/movie/${this.$route.query.details}?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+      if (this.$route.query.details) {
+        this.api = `movie`;
+        this.routeApi = this.$route.query.details;
+      }
+      if (this.$route.query.detailsSerie) {
+        this.api = `tv`;
+        this.routeApi = this.$route.query.detailsSerie;
+      }
+      fetch(`https://api.themoviedb.org/3/${this.api}/${this.routeApi}?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
           .then(response => response.json())
           .then(data => {
             this.details = data;
+            if(this.api === "movie"){
+              this.title = this.details.title;
+            }else{
+              this.title = this.details.name;
+            }
           }).catch(error => {
         console.log(error);
       });
     },
     async getVideo() {
-      fetch(`https://api.themoviedb.org/3/movie/${this.$route.query.details}/videos?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+      if (this.$route.query.details) {
+        this.api = `movie`;
+        this.routeApi = this.$route.query.details;
+      }
+      if (this.$route.query.detailsSerie) {
+        this.api = `tv`;
+        this.routeApi = this.$route.query.detailsSerie;
+      }
+      fetch(`https://api.themoviedb.org/3/${this.api}/${this.routeApi}/videos?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
           .then(response => response.json())
           .then(data => {
-            if (data.results[0]) {
-              this.srcVideo = data.results;
-            }
+            this.srcVideo = data.results;
             console.log(this.srcVideo);
           }).catch(error => {
         console.log(error);
@@ -75,7 +97,7 @@ export default {
         const videoKey = this.srcVideo[0].key;
         return `https://www.youtube.com/embed/${videoKey}?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=${videoKey}`;
       } else {
-        return "";
+        return "https://www.youtube.com/embed/dQw4w9WgXcQ?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=dQw4w9WgXcQ";
       }
     },
   },

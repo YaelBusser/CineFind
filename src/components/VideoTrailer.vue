@@ -90,7 +90,7 @@ export default {
       this.overview = this.theMovie.overview.substring(0, this.theMovie.overview.indexOf("."));
     },
     async moviePopular() {
-      fetch("https://api.themoviedb.org/3/movie/popular?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
+      fetch("https://api.themoviedb.org/3/trending/movie/day?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
           .then(response => response.json())
           .then(data => {
             this.movie = data.results;
@@ -116,7 +116,7 @@ export default {
         const videoKey = this.video[0].key;
         return `https://www.youtube.com/embed/${videoKey}?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=${videoKey}`;
       }
-      return "";
+      return "https://www.youtube.com/embed/dQw4w9WgXcQ?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=dQw4w9WgXcQ";
     },
   },
   mounted() {
@@ -131,6 +131,7 @@ export default {
   display: flex;
   gap: 1vw;
   transition: all ease-in-out 0.5s;
+  will-change: transition;
 }
 
 .block-titleTop10 p {
@@ -152,6 +153,7 @@ export default {
   align-items: flex-start;
   gap: 0.1vw;
   transition: all ease-in-out 0.5s;
+  will-change: transition;
 }
 
 svg {
@@ -171,6 +173,7 @@ svg {
   margin-block-end: 0;
   text-align: left;
   transition: all ease-in-out 0.5s;
+  will-change: transition;
 }
 
 .description {
@@ -179,6 +182,7 @@ svg {
   font-size: 1vw;
   text-align: justify;
   transition: all ease-in-out 0.5s;
+  will-change: transition;
   font-family: CineFindLight;
 }
 
@@ -190,6 +194,7 @@ svg {
   font-family: CineFindMedium, serif;
   border: none;
   transition: all ease-in-out 0.2s;
+  will-change: transition;
   cursor: pointer;
   border-radius: 10px 10px 10px 10px;
   display: flex;

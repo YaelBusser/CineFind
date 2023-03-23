@@ -1,11 +1,11 @@
 <template>
   <div class="videoTrailer">
-    <VideoTrailer @card-movie="cardMovie">
-      <Movies10 @card-movie-little="cardMovie" />
-    </VideoTrailer>
-    <details-by-id :path="path" />
+    <VideoTrailer @card-movie="cardMovie"/>
+    <Movies10 @card-movie-little="cardMovie"/>
+    <details-by-id :path="path"/>
   </div>
-  <div class="block-list">
+  <div class="body-home">
+    <Series10 @card-serie-little="cardSerie"/>
     <MovieList></MovieList>
   </div>
 </template>
@@ -15,9 +15,11 @@ import MovieList from "./MovieList.vue";
 import VideoTrailer from "../components/VideoTrailer.vue";
 import Movies10 from "../components/Movies10.vue";
 import DetailsById from "../components/detailsById.vue";
+import Series10 from "../components/Series10.vue";
 
 export default {
   components: {
+    Series10,
     DetailsById,
     Movies10,
     VideoTrailer,
@@ -27,7 +29,7 @@ export default {
   data() {
     return {
       showBlockMovieInfos: null,
-      path: "/"
+      path: "/",
     }
   },
   mounted() {
@@ -41,22 +43,29 @@ export default {
     }
   },
   methods: {
-    cardMovie(cardId) {
+     cardMovie(cardId) {
       this.$router.push({path: this.$route.path, query: {details: cardId}});
     },
-    //récupérer toutes les infos du movie grâce au paramètre dans l'url avec "this.$route.query.q"
+    cardSerie(cardId) {
+      this.$router.push({path: this.$route.path, query: {detailsSerie: cardId}});
+    },
   },
 }
 </script>
 <style scoped>
 .videoTrailer {
   width: 100%;
-  position: absolute;
+  position: relative;
   left: 0;
   top: 0;
 }
 
-.block-list {
-  margin-top: 150vh;
+.body-home {
+  margin-top: 30vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
 }
 </style>

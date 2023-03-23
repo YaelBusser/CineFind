@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <div class="block-main-moviestop10">
-      <h2>Top 10 des films aujourd'hui</h2>
+    <div class="block-main-seriestop10">
+      <h2>Top 10 des séries aujourd'hui</h2>
       <div class="slide">
-        <div v-for="(movie, index) in movies" class="content-top10" @mouseover="idVideoCard = movie.id; showCardMovie = true; idMovieHover = index; getVideoCard()"
+        <div v-for="(serie, index) in series" class="content-top10" @mouseover="idVideoCard = serie.id; showCardserie = true; idserieHover = index; getVideoCard()"
              :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${p1}vw + ${index * p2}vw))`
              : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${p5}vw + ${index * p2}vw))` "
-             :id="`movie${index}`">
+             :id="`serie${index}`">
           <svg :id="`item${index}`" width="100%" height="100%"
                :viewBox="click % 2 === 1 ? viewBox[index] : viewBox[index]"
                class="svg">
@@ -14,9 +14,9 @@
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
           <img class="itemPoster"
-               :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
-          <div v-if="showCardMovie && idMovieHover === index" class="cardMovie" onmouseleave="showCardMovie = false;"
-               @mouseleave="showCardMovie = false"
+               :src="`https://image.tmdb.org/t/p/w500/${serie.poster_path}`">
+          <div v-if="showCardserie && idserieHover === index" class="cardserie" onmouseleave="showCardserie = false;"
+               @mouseleave="showCardserie = false"
           >
             <iframe
                 :src="videoUrl()"
@@ -24,7 +24,7 @@
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
             <div class="parent-block-btn">
-              <div class="block-btn" @click="showMovieInfos">
+              <div class="block-btn" @click="showserieInfos">
                 <i class="fa-solid fa-circle-info"></i>
                 <p>Plus d'infos</p>
               </div>
@@ -45,13 +45,13 @@ export default {
   name: "VideoTrailer",
   data() {
     return {
-      showBlockMovieInfos: false,
+      showBlockserieInfos: false,
       idVideoCard: 0,
       videoCard: [],
       srcVideo: null,
-      showCardMovie: false,
-      idMovieHover: null,
-      movies: [],
+      showCardserie: false,
+      idserieHover: null,
+      series: [],
       logoNumber: [],
       viewBox: [],
       i: 0,
@@ -86,17 +86,17 @@ export default {
     }
   },
   mounted() {
-    this.moviePopular();
+    this.seriePopular();
     this.getNumber();
     this.getViewBox();
-    this.placeMovies();
+    this.placeseries();
   },
   methods: {
-    showMovieInfos() {
-      this.$emit('card-movie-little', this.idVideoCard);
+    showserieInfos() {
+      this.$emit('card-serie-little', this.idVideoCard);
     },
     async getVideoCard() {
-      fetch(`https://api.themoviedb.org/3/movie/${this.idVideoCard}/videos?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+      fetch(`https://api.themoviedb.org/3/tv/${this.idVideoCard}/videos?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
           .then(response => response.json())
           .then(data => {
             this.videoCard = data.results;
@@ -107,23 +107,25 @@ export default {
     videoUrl() {
       if (this.videoCard.length > 0) {
         const videoKey = this.videoCard[0].key;
+        console.log(videoKey);
         return `https://www.youtube.com/embed/${videoKey}?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=${videoKey}`;
       }
       return "";
     },
-    async placeMovies() {
+    async placeseries() {
       this.p10 = -70;
     },
-    async moviePopular() {
-      fetch("https://api.themoviedb.org/3/trending/movie/day?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
+    async seriePopular() {
+      fetch("https://api.themoviedb.org/3/trending/tv/day?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
           .then(response => response.json())
           .then(data => {
             data = data.results.slice(0, 10);
-            this.movies = data;
+            this.series = data;
           }).catch(error => {
         console.log(error);
       });
     },
+
     getViewBox() {
       this.viewBox.push(this.viewBox1);
       this.viewBox.push(this.viewBox2);
@@ -161,8 +163,8 @@ export default {
     async sliderScrollRight() {
       this.click++;
       if(this.click % 2 === 1){
-      this.p1 = -70;
-      this.p5 = -70;
+        this.p1 = -70;
+        this.p5 = -70;
       }else {
         this.p1 = 15;
         this.p5 = 15;
@@ -209,11 +211,11 @@ iframe {
   transform: scale(2.2);
   width: 15vw;
   height: 20vh;
-  padding-left: 3vw;
   pointer-events: none;
+  padding-left: 4vw;
 }
 
-.cardMovie {
+.cardserie {
   width: 24vw;
   height: 35vh;
   position: absolute;
@@ -229,10 +231,8 @@ iframe {
 }
 
 .container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin-top: -10vh;
+  position: relative;
+  margin-top: 5vh;
   width: 100%;
 }
 
@@ -270,7 +270,7 @@ iframe {
   right: 0;
 }
 
-.block-main-moviestop10 {
+.block-main-seriestop10 {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -283,7 +283,7 @@ iframe {
   overflow: hidden;
 }
 
-.block-main-moviestop10 h2 {
+.block-main-seriestop10 h2 {
   margin-block-start: 0;
   margin-block-end: 0;
   text-align: left;
