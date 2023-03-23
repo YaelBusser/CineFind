@@ -100,8 +100,8 @@ export default {
   },
   methods: {
     async getData() {
-      if (!this.$route.query.q) {
-        this.$router.replace({path: "/"});
+      if (this.$route.query.q === "") {
+        await this.$router.replace({path: this.$route.path});
       }
       if (this.$route.query.q) {
         await this.movieListSearch();

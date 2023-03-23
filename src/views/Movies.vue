@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     cardMovie(cardId) {
-      this.$router.push({path: this.$route.path, query: {q: cardId}});
+      this.$router.push({path: this.$route.path, query: {details: cardId}});
       console.log(cardId);
     },
     //récupérer toutes les infos du movie grâce au paramètre dans l'url avec "this.$route.query.q"

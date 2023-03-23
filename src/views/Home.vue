@@ -31,7 +31,7 @@ export default {
     }
   },
   mounted() {
-    this.$router.replace({path: "/"});
+    this.$router.replace({path: this.$route.path});
   },
   watch: {
     // watch sur $route pour détecter les changements d'URL
@@ -42,8 +42,7 @@ export default {
   },
   methods: {
     cardMovie(cardId) {
-      this.$router.push({path: this.$route.path, query: {q: cardId}});
-      console.log(cardId);
+      this.$router.push({path: this.$route.path, query: {details: cardId}});
     },
     //récupérer toutes les infos du movie grâce au paramètre dans l'url avec "this.$route.query.q"
   },
