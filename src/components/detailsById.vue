@@ -13,11 +13,20 @@
         <h2>{{ title }}</h2>
         <div class="block-infos">
           <div class="container-infos">
-            <p class="description">{{ this.details.overview }}</p>
+            <div class="top-infos">
+              <p class="date">{{ this.date.substring(0, 4) }}</p>
+              <p class="age-limit" v-if="ageLimit !== '' ">{{ ageLimit }}+</p>
+            </div>
+            <p class="description">{{ details.overview }}</p>
           </div>
-          <div class="distrib-genres">
-            <h3>Distribution</h3>
-            <h3>Genres</h3>
+          <div class="genres">
+            <span class="text-genres">Genres: </span>
+            <span v-for="(genre, index) in details.genres">
+              {{ genre.name }}<span v-if="index !== details.genres.length-1">, </span>
+            </span>
+          </div>
+          <div class="people">
+
           </div>
         </div>
       </div>
@@ -38,6 +47,9 @@ export default {
       api: "",
       routeApi: "",
       title: "",
+      date: "",
+      ageLimit: "",
+      i: 0,
     }
   },
   watch: {
@@ -59,14 +71,32 @@ export default {
         this.api = `tv`;
         this.routeApi = this.$route.query.detailsSerie;
       }
-      fetch(`https://api.themoviedb.org/3/${this.api}/${this.routeApi}?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+      fetch(`https://api.themoviedb.org/3/${this.api}/${this.routeApi}?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&append_to_response=release_dates`)
           .then(response => response.json())
           .then(data => {
             this.details = data;
-            if(this.api === "movie"){
+            if (this.api === "movie") {
               this.title = this.details.title;
-            }else{
+              this.date = this.details.release_date;
+              for (this.i = 0; this.i < this.details.release_dates.results.length - 1; this.i++) {
+                if (this.details.release_dates.results[this.i].iso_3166_1 === "FR") {
+                  this.ageLimit = this.details.release_dates.results[this.i].release_dates[0].certification;
+                }
+              }
+            } else {
+              fetch(`https://api.themoviedb.org/3/tv/${this.routeApi}/content_ratings?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+                  .then(response => response.json())
+                  .then(dataTv => {
+                    for (this.i = 0; this.i < dataTv.results.length - 1; this.i++) {
+                      if (dataTv.results[this.i].iso_3166_1 === "FR") {
+                        this.ageLimit = dataTv.results[this.i].rating;
+                      }
+                    }
+                  }).catch(error => {
+                console.log(error)
+              });
               this.title = this.details.name;
+              this.date = this.details.last_air_date;
             }
           }).catch(error => {
         console.log(error);
@@ -105,30 +135,52 @@ export default {
 </script>
 
 <style scoped>
-.distrib-genres {
-  border: 1px solid green;
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: start;
-}
-
-.distrib-genres h3 {
+.age-limit {
+  width: 1.5vw;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  padding: 0.1vw;
+  font-size: 0.7vw;
   margin-block-start: 0;
   margin-block-end: 0;
-  font-size: 0.8vw;
+  text-align: center;
+}
+
+.top-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.date {
+  font-family: CineFindLight;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  color: white;
+}
+
+.text-genres {
+  margin-block-start: 0;
+  margin-block-end: 0;
   color: #777;
   font-family: CineFindLight;
 }
 
+.genres {
+  width: 20%;
+  gap: 5px;
+  font-size: 0.8vw;
+}
+
+
 .container-infos {
-  border: 1px solid blue;
   width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .block-infos {
-  border: 1px solid red;
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -138,7 +190,7 @@ export default {
   color: white;
   text-align: justify;
   font-size: 0.8vw;
-  font-family: CineFindRegular;
+  font-family: CineFindLight;
   margin-block-start: 0;
   margin-block-end: 0;
 }
