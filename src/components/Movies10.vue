@@ -3,7 +3,8 @@
     <div class="block-main-moviestop10">
       <h2>Top 10 des films aujourd'hui</h2>
       <div class="slide">
-        <div v-for="(movie, index) in movies" class="content-top10" @mouseover="idVideoCard = movie.id; showCardMovie = true; idMovieHover = index; getVideoCard()"
+        <div v-for="(movie, index) in movies" class="content-top10"
+             @mouseover="idVideoCard = movie.id; idMovieHover = index; getVideoCard()"
              :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${p1}vw + ${index * p2}vw))`
              : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${p5}vw + ${index * p2}vw))` "
              :id="`movie${index}`">
@@ -13,17 +14,16 @@
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
-          <img class="itemPoster"
+          <img class="itemPoster" @mouseover="delayedShowCardMovie(); isOver = true" @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
-          <div v-if="showCardMovie && idMovieHover === index" class="cardMovie" onmouseleave="showCardMovie = false;"
-               @mouseleave="showCardMovie = false"
-          >
+          <div :style="showCardMovie && idMovieHover === index ? 'opacity: 1; z-index: 1; left: -15vw' : 'opacity: 0; z-index: -1; left: -1vw'" class="cardMovie" @mouseleave="showCardMovie = false;">
             <iframe
+                v-if="showCardMovie && idMovieHover === index"
                 :src="videoUrl()"
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
-            <div class="parent-block-btn">
+            <div class="parent-block-btn" v-if="showCardMovie && idMovieHover === index">
               <div class="block-btn" @click="showMovieInfos">
                 <i class="fa-solid fa-circle-info"></i>
                 <p>Plus d'infos</p>
@@ -45,6 +45,7 @@ export default {
   name: "VideoTrailer",
   data() {
     return {
+      isOver: false,
       showBlockMovieInfos: false,
       idVideoCard: 0,
       videoCard: [],
@@ -92,6 +93,13 @@ export default {
     this.placeMovies();
   },
   methods: {
+    delayedShowCardMovie() {
+      setTimeout(() => {
+        if (this.isOver === true) {
+          this.showCardMovie = true;
+        }
+      }, 500);
+    },
     showMovieInfos() {
       this.$emit('card-movie-little', this.idVideoCard);
     },
@@ -150,20 +158,20 @@ export default {
     },
     async sliderScrollLeft() {
       this.click++;
-      if(this.click % 2 === 1){
+      if (this.click % 2 === 1) {
         this.p1 = -70;
         this.p5 = -70;
-      }else {
+      } else {
         this.p1 = 15;
         this.p5 = 15;
       }
     },
     async sliderScrollRight() {
       this.click++;
-      if(this.click % 2 === 1){
-      this.p1 = -70;
-      this.p5 = -70;
-      }else {
+      if (this.click % 2 === 1) {
+        this.p1 = -70;
+        this.p5 = -70;
+      } else {
         this.p1 = 15;
         this.p5 = 15;
       }
@@ -173,7 +181,7 @@ export default {
 
 </script>
 <style scoped>
-.parent-block-btn{
+.parent-block-btn {
   width: 100%;
   position: absolute;
   display: flex;
@@ -182,6 +190,7 @@ export default {
   bottom: 0;
   height: 12vh;
 }
+
 .block-btn {
   width: 10vw;
   height: 6vh;
@@ -218,11 +227,11 @@ iframe {
   height: 35vh;
   position: absolute;
   top: -2vw;
-  left: -10vw;
+  left: -15vw;
   border-radius: 10px 10px 10px 10px;
   overflow: hidden;
   background-color: #1a1a1a;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
   opacity: 1;
   z-index: 50;
   transition: all ease-in-out 0.5s;
@@ -313,7 +322,7 @@ iframe {
   bottom: 0;
 }
 
-svg {
+.svg {
   position: absolute;
   left: -7.8vw;
   z-index: 0;

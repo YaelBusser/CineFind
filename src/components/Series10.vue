@@ -13,10 +13,9 @@
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
-          <img class="itemPoster"
+          <img class="itemPoster" @mouseover="delayedShowCardMovie(); isOver = true" @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${serie.poster_path}`">
-          <div v-if="showCardserie && idserieHover === index" class="cardserie" onmouseleave="showCardserie = false;"
-               @mouseleave="showCardserie = false"
+          <div :style="showCardserie && idserieHover === index ? 'opacity: 1; z-index: 1; left: -15vw' : 'opacity: 0; z-index: -1; left: -1vw'" class="cardserie" @mouseleave="showCardserie = false;"
           >
             <iframe
                 :src="videoUrl()"
@@ -45,6 +44,7 @@ export default {
   name: "VideoTrailer",
   data() {
     return {
+      isOver: false,
       showBlockserieInfos: false,
       idVideoCard: 0,
       videoCard: [],
@@ -92,6 +92,13 @@ export default {
     this.placeseries();
   },
   methods: {
+    delayedShowCardMovie() {
+      setTimeout(() => {
+        if (this.isOver === true) {
+          this.showCardMovie = true;
+        }
+      }, 500);
+    },
     showserieInfos() {
       this.$emit('card-serie-little', this.idVideoCard);
     },
