@@ -3,7 +3,8 @@
     <div class="block-main-seriestop10">
       <h2>Top 10 des séries aujourd'hui</h2>
       <div class="slide">
-        <div v-for="(serie, index) in series" class="content-top10" @mouseover="idVideoCard = serie.id; showCardserie = true; idserieHover = index; getVideoCard()"
+        <div v-for="(serie, index) in series" class="content-top10"
+             @mouseover="idVideoCard = serie.id; showCardserie = true; idserieHover = index; getVideoCard()"
              :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${p1}vw + ${index * p2}vw))`
              : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${p5}vw + ${index * p2}vw))` "
              :id="`serie${index}`">
@@ -15,14 +16,17 @@
           </svg>
           <img class="itemPoster" @mouseover="delayedShowCardMovie(); isOver = true" @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${serie.poster_path}`">
-          <div :style="showCardserie && idserieHover === index ? 'opacity: 1; z-index: 1; left: -15vw' : 'opacity: 0; z-index: -1; left: -1vw'" class="cardserie" @mouseleave="showCardserie = false;"
+          <div
+              :style="showCardserie && idserieHover === index ? 'opacity: 1; z-index: 1; left: -15vw' : 'opacity: 1; z-index: -1; left: -1vw'"
+              class="cardserie" @mouseleave="showCardserie = false;"
           >
             <iframe
+                v-if="showCardserie && idserieHover === index"
                 :src="videoUrl()"
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
-            <div class="parent-block-btn">
+            <div class="parent-block-btn" v-if="showCardserie && idserieHover === index">
               <div class="block-btn" @click="showserieInfos">
                 <i class="fa-solid fa-circle-info"></i>
                 <p>Plus d'infos</p>
@@ -159,20 +163,20 @@ export default {
     },
     async sliderScrollLeft() {
       this.click++;
-      if(this.click % 2 === 1){
+      if (this.click % 2 === 1) {
         this.p1 = -70;
         this.p5 = -70;
-      }else {
+      } else {
         this.p1 = 15;
         this.p5 = 15;
       }
     },
     async sliderScrollRight() {
       this.click++;
-      if(this.click % 2 === 1){
+      if (this.click % 2 === 1) {
         this.p1 = -70;
         this.p5 = -70;
-      }else {
+      } else {
         this.p1 = 15;
         this.p5 = 15;
       }
@@ -182,7 +186,7 @@ export default {
 
 </script>
 <style scoped>
-.parent-block-btn{
+.parent-block-btn {
   width: 100%;
   position: absolute;
   display: flex;
@@ -191,6 +195,7 @@ export default {
   bottom: 0;
   height: 12vh;
 }
+
 .block-btn {
   width: 10vw;
   height: 6vh;

@@ -16,7 +16,9 @@
           </svg>
           <img class="itemPoster" @mouseover="delayedShowCardMovie(); isOver = true" @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
-          <div :style="showCardMovie && idMovieHover === index ? 'opacity: 1; z-index: 1; left: -15vw' : 'opacity: 0; z-index: -1; left: -1vw'" class="cardMovie" @mouseleave="showCardMovie = false;">
+          <div
+              :style="showCardMovie && idMovieHover === index ? 'opacity: 1; z-index: 1; left: -15vw' : 'opacity: 1; z-index: -1; left: -1vw'"
+              class="cardMovie" @mouseleave="showCardMovie = false;">
             <iframe
                 v-if="showCardMovie && idMovieHover === index"
                 :src="videoUrl()"
