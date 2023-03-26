@@ -6,7 +6,7 @@
   </div>
   <div class="body-home">
     <Series10 @card-serie-little="cardSerie"/>
-    <MovieList></MovieList>
+    <MovieList @card-little="cardMovie"></MovieList>
   </div>
 </template>
 <script>
@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-     cardMovie(cardId) {
+    cardMovie(cardId) {
       this.$router.push({path: this.$route.path, query: {details: cardId}});
     },
     cardSerie(cardId) {

@@ -68,10 +68,10 @@ export default {
 }
 
 .block-search input[type=text] {
-  padding: 15px 40px 15px 20px;
-  width: 0;
+  padding: 0.5vw;
+  width: 1.5vw;
   color: rgba(255, 255, 255, 0.5) !important;
-  font-size: 16px;
+  font-size: 0.8vw;
   font-weight: 100;
   letter-spacing: 2px;
   border: none;
@@ -80,22 +80,28 @@ export default {
   outline: none !important;
   z-index: 2;
   color: white;
+  opacity: 0;
 }
 .block-search input[type=text]::placeholder{
   color: rgba(255, 255, 255, 0.5);
 }
 .block-search input[type=text]:focus {
-  width: 300px;
+  width: 17vw;
+  height: 3vh;
+  margin-right: 0.8vw;
   border: 1px solid rgba(255, 255, 255, 0.5);
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0,0,0,0.9);
+  opacity: 1;
 }
 
 .block-search i {
   position: relative;
-  left: -37px;
   color: black;
   z-index: -1;
   color: white;
+  font-size: 1vw;
+  right: 2.5vw;
+  top: 0.3vh;
 }
 
 .header {
@@ -104,7 +110,7 @@ export default {
   left: 0;
   right: 0;
   background-color: rgba(0,0,0,0);
-  height: 70px;
+  height: 8vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -122,8 +128,8 @@ export default {
 nav {
   display: flex;
   align-items: center;
-  gap: 50px;
-  margin-left: 50px;
+  gap: 1vw;
+  margin-left: 2vw;
 }
 
 nav a {
@@ -133,14 +139,14 @@ nav a {
 }
 
 nav img {
-  width: 100px;
+  width: 6vw;
 }
 
 nav p {
   font-family: CineFindLight;
   color: #f1f1f1;
   transition: all 0.1s ease-in-out;
-  font-size: 15px;
+  font-size: 0.8vw;
 }
 
 nav p:hover {
@@ -149,6 +155,6 @@ nav p:hover {
 
 .nav-text {
   display: flex;
-  gap: 20px;
+  gap: 1vw;
 }
 </style>

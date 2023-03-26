@@ -14,10 +14,10 @@
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
-          <img class="itemPoster" @mouseover="delayedShowCardMovie(); isOver = true" @mouseleave="isOver = false"
+          <img class="itemPoster" @click="showMovieInfos" @mouseover="delayedShowCardMovie(); isOver = true" @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
           <div
-              :style="showCardMovie && idMovieHover === index ? 'opacity: 1; z-index: 1; left: -15vw' : 'opacity: 1; z-index: -1; left: -1vw'"
+              :style="showCardMovie && idMovieHover === index ? 'opacity: 1; z-index: 1; transform: scale(1); left: -10vw' : 'opacity: 0; z-index: -1; transform: scale(0.1)'"
               class="cardMovie" @mouseleave="showCardMovie = false;">
             <iframe
                 v-if="showCardMovie && idMovieHover === index"
@@ -33,10 +33,10 @@
             </div>
           </div>
         </div>
+        <a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>
+        <a class="switchRight sliderButton" @click="sliderScrollRight">❯</a>
       </div>
     </div>
-    <a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>
-    <a class="switchRight sliderButton" @click="sliderScrollRight">❯</a>
   </div>
 </template>
 <script>
@@ -219,16 +219,16 @@ iframe {
   clip-path: inset(2vw 0vw);
   transform: scale(2.2);
   width: 15vw;
-  height: 20vh;
+  height: 23vh;
   padding-left: 3vw;
   pointer-events: none;
 }
 
 .cardMovie {
   width: 24vw;
-  height: 35vh;
+  height: 45vh;
   position: absolute;
-  top: -2vw;
+  top: -6vw;
   left: -15vw;
   border-radius: 10px 10px 10px 10px;
   overflow: hidden;
@@ -236,15 +236,18 @@ iframe {
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
   opacity: 1;
   z-index: 50;
-  transition: all ease-in-out 0.5s;
+  transition: all ease-in-out 0.3s;
 }
 
 .container {
   position: absolute;
   left: 0;
   right: 0;
-  margin-top: -10vh;
+  margin-top: -20vh;
   width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding-top: 10vh;
 }
 
 .switchLeft, .switchRight {
@@ -290,8 +293,6 @@ iframe {
   width: 100%;
   height: 100%;
   position: relative;
-  padding-bottom: 50px;
-  overflow: hidden;
 }
 
 .block-main-moviestop10 h2 {

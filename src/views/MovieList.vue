@@ -38,7 +38,7 @@
               <div class="container-descriptionMovie-p">
                 <p>{{ movie.title }}</p>
               </div>
-              <button :class="showDetails === movie.id ? 'buttonOn' : 'buttonOff'" @click="showMovieInfos(movie.id); idMovie = movie.id">Détails</button>
+              <button :class="showDetails === movie.id ? 'buttonOn' : 'buttonOff'" @click="showInfos();">Détails</button>
             </div>
           </div>
         </div>
@@ -99,6 +99,9 @@ export default {
     }
   },
   methods: {
+    showInfos() {
+      this.$emit('card-little', this.showDetails);
+    },
     async getData() {
       if (this.$route.query.q === "") {
         await this.$router.replace({path: this.$route.path});

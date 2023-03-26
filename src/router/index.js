@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Movies from "../views/Movies.vue";
 import MovieList from "../views/MovieList.vue";
 import Series from "../views/Series.vue";
+import Search from "../views/Search.vue";
 const routes = [
     {
         name: 'Home',
@@ -15,9 +16,9 @@ const routes = [
         component: Movies,
     },
     {
-        name: 'MovieList',
+        name: 'Search',
         path: '/search',
-        component: MovieList,
+        component: Search,
     },
     {
         name: 'Series',

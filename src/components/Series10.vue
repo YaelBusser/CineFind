@@ -4,7 +4,7 @@
       <h2>Top 10 des séries aujourd'hui</h2>
       <div class="slide">
         <div v-for="(serie, index) in series" class="content-top10"
-             @mouseover="idVideoCard = serie.id; showCardserie = true; idserieHover = index; getVideoCard()"
+             @mouseover="idVideoCard = serie.id; idserieHover = index; getVideoCard()"
              :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${p1}vw + ${index * p2}vw))`
              : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${p5}vw + ${index * p2}vw))` "
              :id="`serie${index}`">
@@ -14,10 +14,10 @@
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
-          <img class="itemPoster" @mouseover="delayedShowCardMovie(); isOver = true" @mouseleave="isOver = false"
+          <img class="itemPoster" @click="showserieInfos" @mouseover="delayedShowCardSerie(); isOver = true" @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${serie.poster_path}`">
           <div
-              :style="showCardserie && idserieHover === index ? 'opacity: 1; z-index: 1; left: -15vw' : 'opacity: 1; z-index: -1; left: -1vw'"
+              :style="showCardserie && idserieHover === index ? 'opacity: 1; z-index: 1; transform: scale(1)' : 'opacity: 0; z-index: -1;transform: scale(0.1)'"
               class="cardserie" @mouseleave="showCardserie = false;"
           >
             <iframe
@@ -96,10 +96,10 @@ export default {
     this.placeseries();
   },
   methods: {
-    delayedShowCardMovie() {
+    delayedShowCardSerie() {
       setTimeout(() => {
         if (this.isOver === true) {
-          this.showCardMovie = true;
+          this.showCardserie = true;
         }
       }, 500);
     },
@@ -222,16 +222,16 @@ iframe {
   clip-path: inset(2vw 0vw);
   transform: scale(2.2);
   width: 15vw;
-  height: 20vh;
+  height: 23vh;
   pointer-events: none;
-  padding-left: 4vw;
+  padding-left: 3vw;
 }
 
 .cardserie {
   width: 24vw;
-  height: 35vh;
+  height: 45vh;
   position: absolute;
-  top: -2vw;
+  top: -6vw;
   left: -10vw;
   border-radius: 10px 10px 10px 10px;
   overflow: hidden;
@@ -239,13 +239,15 @@ iframe {
   box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
   opacity: 1;
   z-index: 50;
-  transition: all ease-in-out 0.5s;
+  transition: all ease-in-out 0.3s;
 }
 
 .container {
   position: relative;
-  margin-top: 5vh;
   width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding-top: 10vh;
 }
 
 .switchLeft, .switchRight {
@@ -291,8 +293,7 @@ iframe {
   width: 100%;
   height: 100%;
   position: relative;
-  padding-bottom: 50px;
-  overflow: hidden;
+  padding-bottom: 10vh;
 }
 
 .block-main-seriestop10 h2 {

@@ -1,5 +1,6 @@
 <template>
-  <div class="block-movieInfos" v-if="this.$route.query.details || this.$route.query.detailsSerie">
+  <div class="block-movieInfos"
+       :style="this.$route.query.details || this.$route.query.detailsSerie ? 'opacity: 1; z-index: 999; transform: scale(1)' : 'opacity: 0; z-index: -1; transform: scale(0.1)'">
     <div class="overlay-cardMovieInfos" @click="this.$router.replace({path: `${path}`});"></div>
     <div class="card-movieInfos">
       <i class="fa-solid fa-circle-xmark" @click="this.$router.replace({path: `${path}`});"></i>
@@ -244,15 +245,15 @@ export default {
   font-size: 1.8vw;
   width: 1.8vw;
   height: 1.7vw;
-  color: white;
-  background-color: #181818;
+  color: #181818;
+  background-color: white;
   border-radius: 100%;
   cursor: pointer;
   transition: all ease-in-out 0.2s;
 }
 
 .card-movieInfos i:hover {
-  color: rgba(255, 255, 255, 0.6);
+  color: black;
 }
 
 .block-movieInfos {
@@ -266,5 +267,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all ease-in-out 0.5s;
 }
 </style>

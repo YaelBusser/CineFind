@@ -1,5 +1,5 @@
 <template>
-  <Header @search-movie="searchMovie">
+  <Header @search-movie="search">
   </Header>
   <router-view/>
 </template>
@@ -12,14 +12,12 @@ export default {
     VideoTrailer,
     Header,
   },
-  data(){
-    return{
-
-    }
+  data() {
+    return {}
   },
   methods: {
-    searchMovie(searchText) {
-      this.$router.push({path: '/search', query: {q: searchText}});
+    async search(searchText) {
+      await this.$router.push({path: '/search', query: {q: searchText}});
     },
   },
 }
