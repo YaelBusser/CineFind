@@ -1,14 +1,22 @@
 <template>
-  <details-by-id :path="path" />
+  <details-by-id :path="path"/>
   <div class="body-search">
     <div class="block-movie">
       <h2>Films</h2>
       <div class="movies">
         <div v-for="(resultMovie, index) in resultsMovie" class="block-item">
-          <div class="itemResult" v-if="result !== null">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`" @mouseover="toggleCard(); hoverId = index">
+          <div class="itemResult"
+               :style="index >= 12 && !showMore ? 'position: absolute; opacity: 0;' : 'position: relative; opacity: 1;'">
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
+                 @mouseover="toggleCard(); hoverId = index; isOver = true;" v-if="index < 12"
+                 @mouseleave="isOver = false;">
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
+                 @mouseover="toggleCard(); hoverId = index; isOver = true;" v-if="index >= 12"
+                 @mouseleave="isOver = false;" :class="showMore ? 'moreOn' : 'moreOff'">
           </div>
-          <div class="card" :style="showCard === true && hoverId === index ? 'opacity: 1; z-index: 2' : 'opacity: 0; z-index: -1' " @mouseleave="showCard = false">
+          <div class="card"
+               :style="showCard === true && hoverId === index ? 'opacity: 1; z-index: 2; transform: scale(1);' : 'opacity: 0; z-index: -1; transform: scale(0)' "
+               @mouseleave="showCard = false">
             <div class="block-btn" @click="showInfos; idCard = resultsMovie.id">
               <i class="fa-solid fa-circle-info"></i>
               <p>Plus d'infos</p>
@@ -16,12 +24,16 @@
           </div>
         </div>
       </div>
+      <div class="btnMore">
+        <p @click="toggleMoreShow" v-if="showMore === false"><i class="fa-solid fa-plus"></i></p>
+        <p @click="toggleMoreHide" v-if="showMore"><i class="fa-solid fa-minus"></i></p>
+      </div>
     </div>
     <div class="block-tv">
       <h2>Séries</h2>
       <div class="tv">
-        <div v-for="resultTv in resultsTv">
-          <div class="itemResult" v-if="result !== null">
+        <div v-for="(resultTv, index) in resultsTv">
+          <div class="itemResult" v-if="resultTv.poster_path !== null && index < 12">
             <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`">
           </div>
         </div>
@@ -45,6 +57,8 @@ export default {
       showCard: false,
       idCard: 0,
       path: "/search",
+      showMore: false,
+      isOver: false,
     }
   },
   watch: {
@@ -54,6 +68,12 @@ export default {
     }
   },
   methods: {
+    toggleMoreShow() {
+      this.showMore = true;
+    },
+    toggleMoreHide() {
+      this.showMore = false;
+    },
     cardMovie() {
       this.$router.push({path: this.$route.path, query: {details: this.idCard}});
     },
@@ -63,8 +83,12 @@ export default {
     showInfos() {
       this.$emit('card-infos-little', this.idCard);
     },
-    toggleCard(){
-      this.showCard = true;
+    toggleCard() {
+      setTimeout(() => {
+        if (this.isOver) {
+          this.showCard = true;
+        }
+      }, 500);
     },
     searchResults() {
       if (this.$route.query.q === "") {
@@ -92,12 +116,54 @@ export default {
 </script>
 
 <style scoped>
-.card{
-  width: 24vw;
-  height: 45vh;
+.block-btn {
+}
+
+.btnMore {
+  z-index: 2;
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.btnMore p {
+  font-size: 0.8vw;
+  background-color: rgba(109, 109, 110, 0.7);
+  text-align: center;
+  font-family: CineFindLight, serif;
+  transition: all ease-in-out 0.3s;
+  border-radius: 100%;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding: 0.5vw;
+  width: 1.2vw;
+  cursor: pointer;
+}
+
+.btnMore p:hover {
+  background-color: rgba(109, 109, 110, 0.3);
+}
+
+.moreOff {
   position: absolute;
-  top: -6vw;
-  left: -5vw;
+  z-index: -1;
+  opacity: 0;
+}
+
+.moreOn {
+  position: relative;
+  z-index: 1;
+  opacity: 1;
+}
+
+.card {
+  width: 20vw;
+  height: 30vh;
+  position: absolute;
+  top: -3vw;
+  left: -3vw;
   border-radius: 10px 10px 10px 10px;
   overflow: hidden;
   background-color: #1a1a1a;
@@ -106,22 +172,30 @@ export default {
   z-index: -1;
   transition: all ease-in-out 0.3s;
 }
+
 .body-search {
   margin-top: 15vh;
   display: flex;
   flex-direction: column;
   gap: 5vh;
-  margin-left: 5vw;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10vh;
 }
-h2{
+
+h2 {
   font-size: 1.5vw;
 }
+
 img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 0.3vw;
   z-index: 1;
+  transition: all ease-in-out 0.3s;
+  cursor: pointer;
 }
 
 .itemResult {
@@ -130,16 +204,19 @@ img {
 }
 
 .block-tv, .block-movie {
-  width: 100%;
+  width: 94.4%;
   display: flex;
   flex-direction: column;
   gap: 1vw;
 }
-.movies, .tv{
+
+.movies, .tv {
   display: flex;
-  gap: 0.5vw;
+  flex-wrap: wrap;
+  gap: 0.6vw;
 }
-.block-item{
+
+.block-item {
   position: relative;
 }
 </style>

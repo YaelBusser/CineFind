@@ -265,7 +265,7 @@ iframe {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   background: none;
-  opacity: 0;
+  opacity: 1;
 }
 
 .switchLeft:hover, .switchRight:hover {
