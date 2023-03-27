@@ -158,6 +158,7 @@ export default {
   margin-block-start: 0;
   margin-block-end: 0;
   color: white;
+  font-size: 0.8vw;
 }
 
 .text-genres {
