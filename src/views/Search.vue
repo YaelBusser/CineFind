@@ -6,7 +6,7 @@
       <div class="movies">
         <div v-for="(resultMovie, index) in resultsMovie" class="block-item">
           <div class="itemResult"
-               :style="index >= 12 && !showMore ? 'position: absolute; opacity: 0;' : 'position: relative; opacity: 1;'">
+               :style="index >= 12 && !showMore ? 'position: absolute; opacity: 1; top: -100vh' : 'position: relative; opacity: 1;'">
             <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
                  @mouseover="toggleCard(); hoverId = index; isOver = true;" v-if="index < 12"
                  @mouseleave="isOver = false;">
@@ -24,7 +24,7 @@
           </div>
         </div>
       </div>
-      <div class="btnMore">
+      <div class="btnMore" v-if="resultsMovie.length > 12">
         <p @click="toggleMoreShow" v-if="showMore === false"><i class="fa-solid fa-plus"></i></p>
         <p @click="toggleMoreHide" v-if="showMore"><i class="fa-solid fa-minus"></i></p>
       </div>
@@ -52,7 +52,7 @@
           </div>
         </div>
       </div>
-      <div class="btnMore">
+      <div class="btnMore" v-if="resultsTv.length > 12">
         <p @click="toggleMoreTvShow" v-if="showMoreTv === false"><i class="fa-solid fa-plus"></i></p>
         <p @click="toggleMoreTvHide" v-if="showMoreTv"><i class="fa-solid fa-minus"></i></p>
       </div>
@@ -116,14 +116,14 @@ export default {
         if (this.isOver) {
           this.showCard = true;
         }
-      }, 500);
+      }, 700);
     },
     toggleCardTv() {
       setTimeout(() => {
         if (this.isOverTv) {
           this.showCardTv = true;
         }
-      }, 500);
+      }, 700);
     },
     searchResults() {
       this.showMoreTv = false;
@@ -264,7 +264,7 @@ img {
 .movies, .tv {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6vw;
+  gap: 0.55vw;
 }
 
 .block-item {
