@@ -32,11 +32,29 @@
     <div class="block-tv">
       <h2>Séries</h2>
       <div class="tv">
-        <div v-for="(resultTv, index) in resultsTv">
-          <div class="itemResult" v-if="resultTv.poster_path !== null && index < 12">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`">
+        <div v-for="(resultTv, index) in resultsTv" class="block-item">
+          <div class="itemResult"
+               :style="index >= 12 && !showMoreTv ? 'position: absolute; opacity: 0;' : 'position: relative; opacity: 1;'">
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`"
+                 @mouseover="toggleCardTv(); hoverIdTv = index; isOverTv = true;" v-if="index < 12"
+                 @mouseleave="isOverTv = false;">
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`"
+                 @mouseover="toggleCardTv(); hoverIdTv = index; isOverTv = true;" v-if="index >= 12"
+                 @mouseleave="isOverTv = false;" :class="showMoreTv ? 'moreOn' : 'moreOff'">
+          </div>
+          <div class="cardTv"
+               :style="showCardTv === true && hoverIdTv === index ? 'opacity: 1; z-index: 2; transform: scale(1);' : 'opacity: 0; z-index: -1; transform: scale(0)' "
+               @mouseleave="showCardTv = false">
+            <div class="block-btn" @click="showInfos; idCard = resultsMovie.id">
+              <i class="fa-solid fa-circle-info"></i>
+              <p>Plus d'infos</p>
+            </div>
           </div>
         </div>
+      </div>
+      <div class="btnMore">
+        <p @click="toggleMoreTvShow" v-if="showMoreTv === false"><i class="fa-solid fa-plus"></i></p>
+        <p @click="toggleMoreTvHide" v-if="showMoreTv"><i class="fa-solid fa-minus"></i></p>
       </div>
     </div>
   </div>
@@ -54,11 +72,15 @@ export default {
       resultsTv: [],
       i: 0,
       hoverId: 0,
+      hoverIdTv: 0,
       showCard: false,
+      showCardTv: false,
       idCard: 0,
       path: "/search",
       showMore: false,
+      showMoreTv: false,
       isOver: false,
+      isOverTv: false,
     }
   },
   watch: {
@@ -73,6 +95,12 @@ export default {
     },
     toggleMoreHide() {
       this.showMore = false;
+    },
+    toggleMoreTvShow() {
+      this.showMoreTv = true;
+    },
+    toggleMoreTvHide() {
+      this.showMoreTv = false;
     },
     cardMovie() {
       this.$router.push({path: this.$route.path, query: {details: this.idCard}});
@@ -90,7 +118,16 @@ export default {
         }
       }, 500);
     },
+    toggleCardTv() {
+      setTimeout(() => {
+        if (this.isOverTv) {
+          this.showCardTv = true;
+        }
+      }, 500);
+    },
     searchResults() {
+      this.showMoreTv = false;
+      this.showMore = false;
       if (this.$route.query.q === "") {
         this.$router.push({path: '/'});
       }
@@ -159,6 +196,20 @@ export default {
 }
 
 .card {
+  width: 20vw;
+  height: 30vh;
+  position: absolute;
+  top: -3vw;
+  left: -3vw;
+  border-radius: 10px 10px 10px 10px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  z-index: -1;
+  transition: all ease-in-out 0.3s;
+}
+.cardTv {
   width: 20vw;
   height: 30vh;
   position: absolute;
