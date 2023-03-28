@@ -68,10 +68,10 @@ export default {
 }
 
 .block-search input[type=text] {
-  padding: 0.5vw;
-  width: 1.5vw;
+  padding: 10px;
+  width: 30px;
   color: rgba(255, 255, 255, 0.5) !important;
-  font-size: 0.8vw;
+  font-size: 15px;
   font-weight: 100;
   letter-spacing: 2px;
   border: none;
@@ -81,14 +81,15 @@ export default {
   z-index: 2;
   color: white;
   opacity: 0;
+  margin-right: 20px;
 }
 .block-search input[type=text]::placeholder{
   color: rgba(255, 255, 255, 0.5);
 }
 .block-search input[type=text]:focus {
-  width: 17vw;
-  height: 3vh;
-  margin-right: 0.8vw;
+  width: 300px;
+  height: 25px;
+  margin-right: 25px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   background-color: rgba(0,0,0,0.9);
   opacity: 1;
@@ -99,9 +100,9 @@ export default {
   color: black;
   z-index: -1;
   color: white;
-  font-size: 1vw;
-  right: 2.5vw;
-  top: 0.3vh;
+  font-size: 15px;
+  right: 50px;
+  top: 0px;
 }
 
 .header {
@@ -139,14 +140,14 @@ nav a {
 }
 
 nav img {
-  width: 6vw;
+  width: 100px;
 }
 
 nav p {
   font-family: CineFindLight;
   color: #f1f1f1;
   transition: all 0.1s ease-in-out;
-  font-size: 0.8vw;
+  font-size: 15px;
 }
 
 nav p:hover {
@@ -155,6 +156,6 @@ nav p:hover {
 
 .nav-text {
   display: flex;
-  gap: 1vw;
+  gap: 15px;
 }
 </style>
