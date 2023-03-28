@@ -1,7 +1,7 @@
 <template>
   <div class="block-movieInfos"
        :style="this.$route.query.details || this.$route.query.detailsSerie ? 'opacity: 1; z-index: 999; transform: scale(1)' : 'opacity: 0; z-index: -1; transform: scale(0.1)'">
-    <div class="overlay-cardMovieInfos" @click="this.$router.replace({path: `${path}`});"></div>
+    <div class="overlay-cardMovieInfos" @click="leaveDetails"></div>
     <div class="card-movieInfos">
       <i class="fa-solid fa-circle-xmark" @click="this.$router.replace({path: `${path}`});"></i>
       <div class="card-top">
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+
 export default {
   name: "detailsById",
   props: {
@@ -63,6 +64,12 @@ export default {
     }
   },
   methods: {
+    leaveDetails(){
+        const query = Object.assign({}, this.$route.query);
+        delete query.details;
+        delete query.detailsSerie;
+        return this.$router.replace({ query });
+    },
     async getDetailsMovie() {
       if (this.$route.query.details) {
         this.api = `movie`;
@@ -136,16 +143,6 @@ export default {
 </script>
 
 <style scoped>
-.age-limit {
-  width: 1.5vw;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  color: white;
-  padding: 0.1vw;
-  font-size: 0.7vw;
-  margin-block-start: 0;
-  margin-block-end: 0;
-  text-align: center;
-}
 
 .top-infos {
   display: flex;

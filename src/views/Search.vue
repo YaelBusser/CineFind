@@ -7,21 +7,27 @@
         <div v-for="(resultMovie, index) in resultsMovie" class="block-item">
           <div class="itemResult"
                :style="index >= 12 && !showMore ? 'position: absolute; opacity: 1; top: -100vh' : 'position: relative; opacity: 1;'">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
-                 @mouseover="toggleCard(); infoDetails('movie', resultMovie.id); hoverId = index; isOver = true;" v-if="index < 12"
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`" @click="showInfosMovie(resultMovie.id);"
+                 @mouseover="toggleCard(); infoDetails('movie', resultMovie.id); hoverId = index; isOver = true;"
+                 v-if="index < 12"
                  @mouseleave="isOver = false;">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`" @click="showInfosMovie(resultMovie.id);"
                  @mouseover="toggleCard(); hoverId = index; isOver = true;" v-if="index >= 12"
                  @mouseleave="isOver = false;" :class="showMore ? 'moreOn' : 'moreOff'">
           </div>
           <div class="card"
                :style="showCard === true && hoverId === index ? 'opacity: 1; z-index: 100; transform: scale(1);' : 'opacity: 0; z-index: -1; transform: scale(0)' "
                @mouseleave="showCard = false">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`">
-            <p v-if="infoMovie">{{infoMovie.title}}</p>
-            <div class="block-btn" @click="showInfos; idCard = resultsMovie.id">
-              <i class="fa-solid fa-circle-info"></i>
-              <p>Plus d'infos</p>
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`" @click="showInfosMovie(resultMovie.id);">
+            <div class="description">
+              <p class="age-limit" v-if="ageLimitMovie">{{ ageLimitMovie }}+</p>
+              <p><span v-if="hours > 0">{{ hours }} h</span> {{ time }} min</p>
+            </div>
+            <div class="container-block-btn">
+              <div class="block-btn" @click="showInfosMovie(resultMovie.id); idCard = resultsMovie.id">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>Plus d'infos</p>
+              </div>
             </div>
           </div>
         </div>
@@ -37,20 +43,26 @@
         <div v-for="(resultTv, index) in resultsTv" class="block-item">
           <div class="itemResult"
                :style="index >= 12 && !showMoreTv ? 'position: absolute; opacity: 0;' : 'position: relative; opacity: 1;'">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`"
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`" @click="showInfosSerie(resultTv.id);"
                  @mouseover="toggleCardTv(); hoverIdTv = index; isOverTv = true;" v-if="index < 12"
                  @mouseleave="isOverTv = false;">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`"
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`" @click="showInfosSerie(resultTv.id);"
                  @mouseover="toggleCardTv(); hoverIdTv = index; isOverTv = true;" v-if="index >= 12"
                  @mouseleave="isOverTv = false;" :class="showMoreTv ? 'moreOn' : 'moreOff'">
           </div>
           <div class="cardTv"
                :style="showCardTv === true && hoverIdTv === index ? 'opacity: 1; z-index: 100; transform: scale(1);' : 'opacity: 0; z-index: -1; transform: scale(0)' "
                @mouseleave="showCardTv = false">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`">
-            <div class="block-btn" @click="showInfos; idCard = resultsMovie.id">
-              <i class="fa-solid fa-circle-info"></i>
-              <p>Plus d'infos</p>
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`" @click="showInfosSerie(resultTv.id);">
+            <div class="description">
+              <p class="age-limit" v-if="ageLimitSerie">{{ ageLimitSerie }}+</p>
+              <p><span v-if="hoursSerie > 0">{{ hoursSerie }} h</span> {{ timeSerie }} min</p>
+            </div>
+            <div class="container-block-btn">
+              <div class="block-btn" @click="showInfosSerie(resultTv.id); idCard = resultsMovie.id">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>Plus d'infos</p>
+              </div>
             </div>
           </div>
         </div>
@@ -71,6 +83,14 @@ export default {
   components: {DetailsById},
   data() {
     return {
+      runtime: 0,
+      hours: 0,
+      time: 0,
+      runtimeSerie: 0,
+      hoursSerie: 0,
+      timeSerie: 0,
+      ageLimitMovie: "",
+      ageLimitSerie: "",
       resultsMovie: [],
       resultsTv: [],
       i: 0,
@@ -113,32 +133,62 @@ export default {
     cardSerie() {
       this.$router.push({path: this.$route.path, query: {detailsSerie: this.idCard}});
     },
-    showInfos() {
-      this.$emit('card-infos-little', this.idCard);
+    showInfosMovie(id) {
+      this.$router.push({path: this.$route.path, query: {q: this.$route.query.q, details: id}});
+    },
+    showInfosSerie(id) {
+      this.$router.push({path: this.$route.path, query: {q: this.$route.query.q, detailsSerie: id}});
     },
     toggleCard() {
       setTimeout(() => {
         if (this.isOver) {
           this.showCard = true;
         }
-      }, 700);
+      }, 500);
     },
     toggleCardTv() {
       setTimeout(() => {
         if (this.isOverTv) {
           this.showCardTv = true;
         }
-      }, 700);
+      }, 500);
     },
-    infoDetails(type, id){
-      fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=9f49de7ae4e7847f4cd272851ed07488`)
+    infoDetails(type, id) {
+      fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&append_to_response=release_dates`)
           .then(response => response.json())
           .then(data => {
-            if(type === "movie"){
-              this.infoMovie = data.results;
-              console.log(this.infoMovie);
-            }else{
-              this.infoTv = data.results;
+            if (type === "movie") {
+              this.hours = 0;
+              this.time = 0;
+              this.infoMovie = data;
+              for (this.i = 0; this.i < this.infoMovie.release_dates.results.length - 1; this.i++) {
+                if (this.infoMovie.release_dates.results[this.i].iso_3166_1 === "FR") {
+                  this.ageLimitMovie = this.infoMovie.release_dates.results[this.i].release_dates[0].certification;
+                  console.log(this.infoMovie.release_dates.results[this.i]);
+                }
+              }
+              this.runtime = this.infoMovie.runtime;
+              while (this.runtime >= 60) {
+                this.runtime -= 60;
+                this.hours += 1;
+              }
+              this.time = this.runtime;
+            } else {
+              this.hoursSerie = 0;
+              this.timeSerie = 0;
+              this.infoTv = data;
+              for (this.i = 0; this.i < this.infoTv.release_dates.results.length - 1; this.i++) {
+                if (this.infoTv.release_dates.results[this.i].iso_3166_1 === "FR") {
+                  this.ageLimitSerie = this.infoTv.release_dates.results[this.i].release_dates[0].certification;
+                  console.log(this.infoTv.release_dates.results[this.i]);
+                }
+              }
+              this.runtime = this.infoTv.episode_run_time;
+              while (this.runtime >= 60) {
+                this.runtime -= 60;
+                this.hoursSerie += 1;
+              }
+              this.time = this.runtime;
             }
           }).catch(error => {
         console.log(error);
@@ -172,7 +222,41 @@ export default {
 </script>
 
 <style scoped>
+.description {
+  font-family: CineFindLight;
+  display: flex;
+  width: 100%;
+  height: 50px;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
+  margin-left: 20px;
+}
+
+.container-block-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .block-btn {
+  display: flex;
+  border-radius: 10px;
+  width: 150px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(109, 109, 110, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.block-btn i {
+  font-size: 30px;
+}
+
+.block-btn:hover {
+  background-color: rgba(78, 78, 79, 0.7);
 }
 
 .btnMore {
@@ -228,6 +312,7 @@ export default {
   z-index: -1;
   transition: all ease-in-out 0.3s;
 }
+
 .cardTv {
   width: 400px;
   height: 400px;
@@ -242,10 +327,13 @@ export default {
   z-index: -1;
   transition: all ease-in-out 0.3s;
 }
-.card img, .cardTv img{
+
+.card img, .cardTv img {
   width: 100%;
   height: 60%;
+  border-radius: 10px 10px 0 0;
 }
+
 .body-search {
   margin-top: 150px;
   display: flex;

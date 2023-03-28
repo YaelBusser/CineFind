@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     async search(searchText) {
-      await this.$router.push({path: '/search', query: {q: searchText}});
+      await this.$router.push({path: '/search', query: {q: searchText }});
     },
   },
 }
