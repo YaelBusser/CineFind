@@ -133,11 +133,7 @@ button:focus{
     src: url("./assets/fonts/NetflixSans-Bold.woff2") format("woff2");
 }
 .itemPoster{
-    transition: all 0.3s ease-in-out;
     cursor: pointer;
-}
-.itemPoster:hover{
-    transform: scale(1.2);
 }
 .age-limit {
     width: 30px;

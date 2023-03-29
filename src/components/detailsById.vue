@@ -3,7 +3,7 @@
        :style="this.$route.query.details || this.$route.query.detailsSerie ? 'opacity: 1; z-index: 999; transform: scale(1)' : 'opacity: 0; z-index: -1; transform: scale(0.1)'">
     <div class="overlay-cardMovieInfos" @click="leaveDetails"></div>
     <div class="card-movieInfos">
-      <i class="fa-solid fa-circle-xmark" @click="this.$router.replace({path: `${path}`});"></i>
+      <i class="fa-solid fa-circle-xmark" @click="leaveDetails"></i>
       <div class="card-top">
         <iframe
             class="videoCardMovie"
@@ -16,7 +16,10 @@
           <div class="container-infos">
             <div class="top-infos">
               <p class="date">{{ this.date.substring(0, 4) }}</p>
-              <p class="age-limit" v-if="ageLimit !== '' ">{{ ageLimit }}+</p>
+              <div class="block-age-time">
+                <p class="age-limit" v-if="ageLimit !== '' ">{{ ageLimit }}+</p>
+                <p><span v-if="hours > 0">{{ hours }} h</span> <span v-if="time > 0"> {{ time }} min</span></p>
+              </div>
             </div>
             <p class="description">{{ details.overview }}</p>
           </div>
@@ -52,6 +55,9 @@ export default {
       date: "",
       ageLimit: "",
       i: 0,
+      runtime: 0,
+      hours: 0,
+      time: 0,
     }
   },
   watch: {
@@ -64,11 +70,11 @@ export default {
     }
   },
   methods: {
-    leaveDetails(){
-        const query = Object.assign({}, this.$route.query);
-        delete query.details;
-        delete query.detailsSerie;
-        return this.$router.replace({ query });
+    leaveDetails() {
+      const query = Object.assign({}, this.$route.query);
+      delete query.details;
+      delete query.detailsSerie;
+      return this.$router.replace({query});
     },
     async getDetailsMovie() {
       if (this.$route.query.details) {
@@ -91,6 +97,14 @@ export default {
                   this.ageLimit = this.details.release_dates.results[this.i].release_dates[0].certification;
                 }
               }
+              this.hours = 0;
+              this.time = 0;
+              this.runtime = this.details.runtime;
+              while (this.runtime >= 60) {
+                this.runtime -= 60;
+                this.hours++;
+              }
+              this.time = this.runtime;
             } else {
               fetch(`https://api.themoviedb.org/3/tv/${this.routeApi}/content_ratings?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
                   .then(response => response.json())
@@ -105,6 +119,15 @@ export default {
               });
               this.title = this.details.name;
               this.date = this.details.last_air_date;
+              this.hours = 0;
+              this.time = 0;
+              this.runtime = this.details.episode_run_time;
+              while (this.runtime >= 60) {
+                this.runtime -= 60;
+                this.hours++;
+              }
+              this.time = this.runtime[0];
+              console.log(this.runtime);
             }
           }).catch(error => {
         console.log(error);
@@ -143,6 +166,12 @@ export default {
 </script>
 
 <style scoped>
+.block-age-time {
+  display: flex;
+  gap: 10px;
+  justify-content: start;
+  align-items: center;
+}
 
 .top-infos {
   display: flex;

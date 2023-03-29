@@ -5,8 +5,6 @@
       <div class="slide">
         <div v-for="(movie, index) in movies" class="content-top10"
              @mouseover="idVideoCard = movie.id; idMovieHover = index; getVideoCard()"
-             :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${p1}vw + ${index * p2}vw))`
-             : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${p5}vw + ${index * p2}vw))` "
              :id="`movie${index}`">
           <svg :id="`item${index}`" width="100%" height="100%"
                :viewBox="click % 2 === 1 ? viewBox[index] : viewBox[index]"
@@ -14,10 +12,11 @@
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
-          <img class="itemPoster" @click="showMovieInfos" @mouseover="delayedShowCardMovie(); isOver = true" @mouseleave="isOver = false"
+          <img class="itemPoster" @click="showMovieInfos" @mouseover="delayedShowCardMovie(); isOver = true"
+               @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
           <div
-              :style="showCardMovie && idMovieHover === index ? 'opacity: 1; z-index: 1; transform: scale(1); left: -10vw' : 'opacity: 0; z-index: -1; transform: scale(0.1)'"
+              :style="showCardMovie && idMovieHover === index ? 'opacity: 1; z-index: 100; transform: scale(1); ' : 'opacity: 0; z-index: -1; transform: scale(0.1)'"
               class="cardMovie" @mouseleave="showCardMovie = false;">
             <iframe
                 v-if="showCardMovie && idMovieHover === index"
@@ -33,7 +32,7 @@
             </div>
           </div>
         </div>
-        <a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>
+        <!--<a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>-->
         <a class="switchRight sliderButton" @click="sliderScrollRight">❯</a>
       </div>
     </div>
@@ -47,6 +46,14 @@ export default {
   name: "VideoTrailer",
   data() {
     return {
+      width: 0,
+      indexWidth: 0,
+      runtime: 0,
+      widthSlide: 0,
+      widthLeft: 0,
+      hours: 0,
+      time: 0,
+      ageLimitMovie: "",
       isOver: false,
       showBlockMovieInfos: false,
       idVideoCard: 0,
@@ -59,10 +66,6 @@ export default {
       viewBox: [],
       i: 0,
       click: 0,
-      p1: 15,
-      p5: 15,
-      p10: 250,
-      p2: 17,
       transitionTimeP1: 0.5,
       transitionTimeP2: 0.5,
       transitionTimeP3: 0.5,
@@ -92,7 +95,9 @@ export default {
     this.moviePopular();
     this.getNumber();
     this.getViewBox();
-    this.placeMovies();
+  },
+  updated() {
+    this.widthSlide = document.getElementsByClassName("slide")[0].scrollWidth;
   },
   methods: {
     delayedShowCardMovie() {
@@ -106,7 +111,7 @@ export default {
       this.$emit('card-movie-little', this.idVideoCard);
     },
     async getVideoCard() {
-      fetch(`https://api.themoviedb.org/3/movie/${this.idVideoCard}/videos?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+      fetch(`https://api.themoviedb.org/3/movie/${this.idVideoCard}/videos?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&append_to_response=release_dates`)
           .then(response => response.json())
           .then(data => {
             this.videoCard = data.results;
@@ -120,9 +125,6 @@ export default {
         return `https://www.youtube.com/embed/${videoKey}?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=${videoKey}`;
       }
       return "";
-    },
-    async placeMovies() {
-      this.p10 = -70;
     },
     async moviePopular() {
       fetch("https://api.themoviedb.org/3/trending/movie/day?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
@@ -159,23 +161,30 @@ export default {
       this.logoNumber.push(this.logoNumber10);
     },
     async sliderScrollLeft() {
-      this.click++;
-      if (this.click % 2 === 1) {
-        this.p1 = -70;
-        this.p5 = -70;
+      console.log(this.width);
+      if (this.width === window.innerWidth) {
+        for (this.i = 0; this.i < 10; this.i++) {
+          document.getElementsByClassName("content-top10")[this.i].style.transform = `translateX(-${this.widthSlide - window.innerWidth}px)`;
+        }
       } else {
-        this.p1 = 15;
-        this.p5 = 15;
+        this.widthLeft -= 500;
+        for (this.i = 0; this.i < 10; this.i++) {
+          document.getElementsByClassName("content-top10")[this.i].style.transform = `translateX(-${this.widthLeft}px)`;
+        }
       }
     },
     async sliderScrollRight() {
-      this.click++;
-      if (this.click % 2 === 1) {
-        this.p1 = -70;
-        this.p5 = -70;
+      this.width += window.innerWidth;
+      this.indexWidth = 0;
+      if (this.width <= this.widthSlide) {
+        for (this.i = 0; this.i < 10; this.i++) {
+          document.getElementsByClassName("content-top10")[this.i].style.transform = `translateX(-${this.width}px)`;
+        }
       } else {
-        this.p1 = 15;
-        this.p5 = 15;
+        this.width = 0;
+        for (this.i = 0; this.i < 10; this.i++) {
+          document.getElementsByClassName("content-top10")[this.i].style.transform = "translateX(0)";
+        }
       }
     },
   },
@@ -183,6 +192,18 @@ export default {
 
 </script>
 <style scoped>
+.description {
+  font-family: CineFindLight, serif;
+  display: flex;
+  width: 100%;
+  height: 50px;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
+  margin-top: 50px;
+  margin-left: 20px;
+}
+
 .parent-block-btn {
   width: 100%;
   position: absolute;
@@ -194,9 +215,9 @@ export default {
 }
 
 .block-btn {
-  width: 10vw;
-  height: 6vh;
-  font-size: 1vw;
+  width: 150px;
+  height: 50px;
+  font-size: 15px;
   background-color: rgba(109, 109, 110, 0.7);
   color: white;
   font-family: CineFindMedium, serif;
@@ -225,11 +246,10 @@ iframe {
 }
 
 .cardMovie {
-  width: 24vw;
-  height: 45vh;
-  position: absolute;
-  top: -6vw;
-  left: -15vw;
+  width: 400px;
+  height: 400px;
+  margin-top: -50px;
+  margin-left: -20px;
   border-radius: 10px 10px 10px 10px;
   overflow: hidden;
   background-color: #1a1a1a;
@@ -237,17 +257,18 @@ iframe {
   opacity: 1;
   z-index: 50;
   transition: all ease-in-out 0.3s;
+  position: absolute;
 }
 
 .container {
   position: absolute;
   left: 0;
   right: 0;
-  margin-top: -20vh;
+  margin-top: -150px;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  padding-top: 10vh;
+  padding-top: 10px;
 }
 
 .switchLeft, .switchRight {
@@ -256,16 +277,15 @@ iframe {
   font-size: 25px;
   font-family: CineFindBold, serif;
   z-index: 3;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  display: flex;
   position: absolute;
   width: 50px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   background: none;
   opacity: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .switchLeft:hover, .switchRight:hover {
@@ -277,11 +297,13 @@ iframe {
 .switchLeft {
   left: 0;
   top: 0;
+  bottom: 0;
 }
 
 .switchRight {
   top: 0;
   right: 0;
+  bottom: 0;
 }
 
 .block-main-moviestop10 {
@@ -306,28 +328,25 @@ iframe {
 
 .slide {
   display: flex;
-  gap: 50px;
-  width: 100%;
-  height: 25vh;
+  height: 250px;
   position: relative;
+  gap: 7%;
 }
 
 .slide img {
-  width: 7.8vw;
+  width: 150px;
   height: 100%;
   border-radius: 0 10px 10px 0;
   z-index: 1;
 }
 
 .content-top10 {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  display: flex;
+  transition: all 0.4s ease-in-out;
 }
 
 .svg {
-  position: absolute;
-  left: -7.8vw;
+  width: 100px;
   z-index: 0;
   top: 0;
   bottom: 0;

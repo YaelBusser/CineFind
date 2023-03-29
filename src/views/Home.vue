@@ -6,7 +6,6 @@
   </div>
   <div class="body-home">
     <Series10 @card-serie-little="cardSerie"/>
-    <MovieList @card-little="cardMovie"></MovieList>
   </div>
 </template>
 <script>

@@ -7,21 +7,24 @@
         <div v-for="(resultMovie, index) in resultsMovie" class="block-item">
           <div class="itemResult"
                :style="index >= 12 && !showMore ? 'position: absolute; opacity: 1; top: -100vh' : 'position: relative; opacity: 1;'">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`" @click="showInfosMovie(resultMovie.id);"
-                 @mouseover="toggleCard(); infoDetails('movie', resultMovie.id); hoverId = index; isOver = true;"
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
+                 @click="showInfosMovie(resultMovie.id);"
+                 @mouseover="toggleCard(); infoCard('movie', resultMovie.id); infoDetails('movie', resultMovie.id); hoverId = index; isOver = true;"
                  v-if="index < 12"
                  @mouseleave="isOver = false;">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`" @click="showInfosMovie(resultMovie.id);"
-                 @mouseover="toggleCard(); hoverId = index; isOver = true;" v-if="index >= 12"
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
+                 @click="showInfosMovie(resultMovie.id);"
+                 @mouseover="toggleCard(); infoCard('movie', resultMovie.id); hoverId = index; isOver = true;" v-if="index >= 12"
                  @mouseleave="isOver = false;" :class="showMore ? 'moreOn' : 'moreOff'">
           </div>
           <div class="card"
                :style="showCard === true && hoverId === index ? 'opacity: 1; z-index: 100; transform: scale(1);' : 'opacity: 0; z-index: -1; transform: scale(0)' "
                @mouseleave="showCard = false">
-            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`" @click="showInfosMovie(resultMovie.id);">
+            <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
+                 @click="showInfosMovie(resultMovie.id);">
             <div class="description">
               <p class="age-limit" v-if="ageLimitMovie">{{ ageLimitMovie }}+</p>
-              <p><span v-if="hours > 0">{{ hours }} h</span> {{ time }} min</p>
+              <p><span v-if="hours > 0">{{ hours }} h</span> <span v-if="time > 0">{{ time }} min</span></p>
             </div>
             <div class="container-block-btn">
               <div class="block-btn" @click="showInfosMovie(resultMovie.id); idCard = resultsMovie.id">
@@ -44,10 +47,11 @@
           <div class="itemResult"
                :style="index >= 12 && !showMoreTv ? 'position: absolute; opacity: 0;' : 'position: relative; opacity: 1;'">
             <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`" @click="showInfosSerie(resultTv.id);"
-                 @mouseover="toggleCardTv(); hoverIdTv = index; isOverTv = true;" v-if="index < 12"
+                 @mouseover="toggleCardTv(); infoCard('tv', resultTv.id); hoverIdTv = index; isOverTv = true;"
+                 v-if="index < 12"
                  @mouseleave="isOverTv = false;">
             <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`" @click="showInfosSerie(resultTv.id);"
-                 @mouseover="toggleCardTv(); hoverIdTv = index; isOverTv = true;" v-if="index >= 12"
+                 @mouseover="toggleCardTv(); infoCard('tv', resultTv.id); hoverIdTv = index; isOverTv = true;" v-if="index >= 12"
                  @mouseleave="isOverTv = false;" :class="showMoreTv ? 'moreOn' : 'moreOff'">
           </div>
           <div class="cardTv"
@@ -56,7 +60,7 @@
             <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`" @click="showInfosSerie(resultTv.id);">
             <div class="description">
               <p class="age-limit" v-if="ageLimitSerie">{{ ageLimitSerie }}+</p>
-              <p><span v-if="hoursSerie > 0">{{ hoursSerie }} h</span> {{ timeSerie }} min</p>
+              <p><span v-if="hours > 0">{{ hours }} h</span> <span v-if="time > 0">{{ time }} min</span></p>
             </div>
             <div class="container-block-btn">
               <div class="block-btn" @click="showInfosSerie(resultTv.id); idCard = resultsMovie.id">
@@ -86,9 +90,6 @@ export default {
       runtime: 0,
       hours: 0,
       time: 0,
-      runtimeSerie: 0,
-      hoursSerie: 0,
-      timeSerie: 0,
       ageLimitMovie: "",
       ageLimitSerie: "",
       resultsMovie: [],
@@ -146,6 +147,45 @@ export default {
         }
       }, 500);
     },
+    infoCard(type, id) {
+      fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&append_to_response=release_dates`)
+          .then(response => response.json())
+          .then(data => {
+            this.infoTv = data;
+            if (type === "tv") {
+              this.hours = 0;
+              this.time = 0;
+              this.runtime = this.infoTv.episode_run_time;
+              while (this.runtime >= 60) {
+                this.runtime -= 60;
+                this.hours += 1;
+              }
+              this.time = this.runtime[0];
+              this.ageLimitSerie = 0;
+              fetch(`https://api.themoviedb.org/3/tv/${id}/content_ratings?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+                  .then(response => response.json())
+                  .then(dataTv => {
+                    for (this.i = 0; this.i < dataTv.results.length - 1; this.i++) {
+                      if (dataTv.results[this.i].iso_3166_1 === "FR") {
+                        this.ageLimitSerie = dataTv.results[this.i].rating;
+                      }
+                    }
+                  }).catch(error => {
+                console.log(error)
+              });
+            } else {
+              this.infoMovie = data;
+              this.hours = 0;
+              this.time = 0;
+              this.runtime = this.infoMovie.runtime;
+              while (this.runtime >= 60) {
+                this.runtime -= 60;
+                this.hours += 1;
+              }
+              this.time = this.runtime;
+            }
+          });
+    },
     toggleCardTv() {
       setTimeout(() => {
         if (this.isOverTv) {
@@ -158,8 +198,6 @@ export default {
           .then(response => response.json())
           .then(data => {
             if (type === "movie") {
-              this.hours = 0;
-              this.time = 0;
               this.infoMovie = data;
               for (this.i = 0; this.i < this.infoMovie.release_dates.results.length - 1; this.i++) {
                 if (this.infoMovie.release_dates.results[this.i].iso_3166_1 === "FR") {
@@ -167,15 +205,7 @@ export default {
                   console.log(this.infoMovie.release_dates.results[this.i]);
                 }
               }
-              this.runtime = this.infoMovie.runtime;
-              while (this.runtime >= 60) {
-                this.runtime -= 60;
-                this.hours += 1;
-              }
-              this.time = this.runtime;
             } else {
-              this.hoursSerie = 0;
-              this.timeSerie = 0;
               this.infoTv = data;
               for (this.i = 0; this.i < this.infoTv.release_dates.results.length - 1; this.i++) {
                 if (this.infoTv.release_dates.results[this.i].iso_3166_1 === "FR") {
@@ -183,12 +213,6 @@ export default {
                   console.log(this.infoTv.release_dates.results[this.i]);
                 }
               }
-              this.runtime = this.infoTv.episode_run_time;
-              while (this.runtime >= 60) {
-                this.runtime -= 60;
-                this.hoursSerie += 1;
-              }
-              this.time = this.runtime;
             }
           }).catch(error => {
         console.log(error);
