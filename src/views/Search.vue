@@ -81,7 +81,7 @@
 
 <script>
 import DetailsById from "../components/detailsById.vue";
-
+import * as process from "process";
 export default {
   name: "Search",
   components: {DetailsById},

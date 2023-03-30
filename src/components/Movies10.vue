@@ -24,6 +24,10 @@
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
+            <div class="description">
+              <p class="age-limit" v-if="ageLimitMovie">{{ ageLimitMovie }}+</p>
+              <p><span v-if="hours > 0">{{ hours }} h</span> {{ time }} min</p>
+            </div>
             <div class="parent-block-btn" v-if="showCardMovie && idMovieHover === index">
               <div class="block-btn" @click="showMovieInfos">
                 <i class="fa-solid fa-circle-info"></i>
@@ -39,8 +43,6 @@
   </div>
 </template>
 <script>
-import {forEach} from "@splidejs/splide/src/js/utils";
-import {delay} from "lodash";
 
 export default {
   name: "VideoTrailer",
@@ -193,15 +195,15 @@ export default {
 </script>
 <style scoped>
 .description {
-  font-family: CineFindLight, serif;
+  font-family: CineFindLight;
   display: flex;
   width: 100%;
   height: 50px;
   gap: 10px;
   align-items: center;
   justify-content: start;
-  margin-top: 50px;
   margin-left: 20px;
+  margin-top: 50px;
 }
 
 .parent-block-btn {
