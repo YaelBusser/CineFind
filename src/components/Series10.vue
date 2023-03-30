@@ -14,7 +14,8 @@
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
-          <img class="itemPoster" @click="showserieInfos" @mouseover="delayedShowCardSerie(); isOver = true" @mouseleave="isOver = false"
+          <img class="itemPoster" @click="showserieInfos" @mouseover="delayedShowCardSerie(serie.id); isOver = true"
+               @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${serie.poster_path}`">
           <div
               :style="showCardserie && idserieHover === index ? 'opacity: 1; z-index: 1; transform: scale(1)' : 'opacity: 0; z-index: -1;transform: scale(0.1)'"
@@ -26,6 +27,10 @@
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen></iframe>
+            <div class="description">
+              <p class="age-limit" v-if="ageLimitSerie">{{ ageLimitSerie }}+</p>
+              <p><span v-if="hours > 0">{{ hours }} h</span> <span v-if="time > 0">{{ time }} min</span></p>
+            </div>
             <div class="parent-block-btn" v-if="showCardserie && idserieHover === index">
               <div class="block-btn" @click="showserieInfos">
                 <i class="fa-solid fa-circle-info"></i>
@@ -87,6 +92,11 @@ export default {
       viewBox8: "-20 0 70 154",
       viewBox9: "-20 0 70 154",
       viewBox10: "0 0 140 154",
+      infoTv: [],
+      ageLimitSerie: 0,
+      hours: 0,
+      time: 0,
+      runtime: 0,
     }
   },
   mounted() {
@@ -96,12 +106,37 @@ export default {
     this.placeseries();
   },
   methods: {
-    delayedShowCardSerie() {
+    delayedShowCardSerie(id) {
       setTimeout(() => {
         if (this.isOver === true) {
           this.showCardserie = true;
         }
       }, 500);
+      fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&append_to_response=release_dates`)
+          .then(response => response.json())
+          .then(data => {
+            this.infoTv = data;
+            this.hours = 0;
+            this.time = 0;
+            this.runtime = this.infoTv.episode_run_time;
+            while (this.runtime >= 60) {
+              this.runtime -= 60;
+              this.hours += 1;
+            }
+            this.time = this.runtime[0];
+            this.ageLimitSerie = 0;
+            fetch(`https://api.themoviedb.org/3/tv/${id}/content_ratings?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+                .then(response => response.json())
+                .then(dataTv => {
+                  for (this.i = 0; this.i < dataTv.results.length - 1; this.i++) {
+                    if (dataTv.results[this.i].iso_3166_1 === "FR") {
+                      this.ageLimitSerie = dataTv.results[this.i].rating;
+                    }
+                  }
+                }).catch(error => {
+              console.log(error)
+            });
+          });
     },
     showserieInfos() {
       this.$emit('card-serie-little', this.idVideoCard);
@@ -186,6 +221,18 @@ export default {
 
 </script>
 <style scoped>
+.description {
+  font-family: CineFindLight;
+  display: flex;
+  width: 100%;
+  height: 50px;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
+  margin-left: 20px;
+  margin-top: 50px;
+}
+
 .parent-block-btn {
   width: 100%;
   position: absolute;

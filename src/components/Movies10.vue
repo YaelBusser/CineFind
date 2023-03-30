@@ -12,7 +12,7 @@
             <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
                   :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
           </svg>
-          <img class="itemPoster" @click="showMovieInfos" @mouseover="delayedShowCardMovie(); isOver = true"
+          <img class="itemPoster" @click="showMovieInfos" @mouseover="delayedShowCardMovie(movie.id); isOver = true"
                @mouseleave="isOver = false"
                :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
           <div
@@ -26,7 +26,7 @@
                 allowfullscreen></iframe>
             <div class="description">
               <p class="age-limit" v-if="ageLimitMovie">{{ ageLimitMovie }}+</p>
-              <p><span v-if="hours > 0">{{ hours }} h</span> {{ time }} min</p>
+              <p><span v-if="hours > 0">{{ hours }} h</span> <span v-if="time > 0">{{ time }} min</span></p>
             </div>
             <div class="parent-block-btn" v-if="showCardMovie && idMovieHover === index">
               <div class="block-btn" @click="showMovieInfos">
@@ -91,6 +91,7 @@ export default {
       viewBox8: "-20 0 70 154",
       viewBox9: "-20 0 70 154",
       viewBox10: "0 0 140 154",
+      infoMovie: [],
     }
   },
   mounted() {
@@ -102,12 +103,31 @@ export default {
     this.widthSlide = document.getElementsByClassName("slide")[0].scrollWidth;
   },
   methods: {
-    delayedShowCardMovie() {
+    delayedShowCardMovie(id) {
       setTimeout(() => {
         if (this.isOver === true) {
           this.showCardMovie = true;
         }
       }, 500);
+      fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&append_to_response=release_dates`)
+          .then(response => response.json())
+          .then(data => {
+            this.infoMovie = data;
+            this.hours = 0;
+            this.time = 0;
+            this.runtime = this.infoMovie.runtime;
+            while (this.runtime >= 60) {
+              this.runtime -= 60;
+              this.hours += 1;
+            }
+            this.time = this.runtime;
+            for (this.i = 0; this.i < this.infoMovie.release_dates.results.length - 1; this.i++) {
+              if (this.infoMovie.release_dates.results[this.i].iso_3166_1 === "FR") {
+                this.ageLimitMovie = this.infoMovie.release_dates.results[this.i].release_dates[0].certification;
+              }
+            }
+
+          });
     },
     showMovieInfos() {
       this.$emit('card-movie-little', this.idVideoCard);

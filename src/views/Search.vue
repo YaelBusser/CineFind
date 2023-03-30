@@ -14,7 +14,8 @@
                  @mouseleave="isOver = false;">
             <img :src="`https://image.tmdb.org/t/p/w500/${resultMovie.poster_path}`"
                  @click="showInfosMovie(resultMovie.id);"
-                 @mouseover="toggleCard(); infoCard('movie', resultMovie.id); hoverId = index; isOver = true;" v-if="index >= 12"
+                 @mouseover="toggleCard(); infoCard('movie', resultMovie.id); hoverId = index; isOver = true;"
+                 v-if="index >= 12"
                  @mouseleave="isOver = false;" :class="showMore ? 'moreOn' : 'moreOff'">
           </div>
           <div class="card"
@@ -51,7 +52,8 @@
                  v-if="index < 12"
                  @mouseleave="isOverTv = false;">
             <img :src="`https://image.tmdb.org/t/p/w500/${resultTv.poster_path}`" @click="showInfosSerie(resultTv.id);"
-                 @mouseover="toggleCardTv(); infoCard('tv', resultTv.id); hoverIdTv = index; isOverTv = true;" v-if="index >= 12"
+                 @mouseover="toggleCardTv(); infoCard('tv', resultTv.id); hoverIdTv = index; isOverTv = true;"
+                 v-if="index >= 12"
                  @mouseleave="isOverTv = false;" :class="showMoreTv ? 'moreOn' : 'moreOff'">
           </div>
           <div class="cardTv"
@@ -82,6 +84,7 @@
 <script>
 import DetailsById from "../components/detailsById.vue";
 import * as process from "process";
+
 export default {
   name: "Search",
   components: {DetailsById},
@@ -207,12 +210,6 @@ export default {
               }
             } else {
               this.infoTv = data;
-              for (this.i = 0; this.i < this.infoTv.release_dates.results.length - 1; this.i++) {
-                if (this.infoTv.release_dates.results[this.i].iso_3166_1 === "FR") {
-                  this.ageLimitSerie = this.infoTv.release_dates.results[this.i].release_dates[0].certification;
-                  console.log(this.infoTv.release_dates.results[this.i]);
-                }
-              }
             }
           }).catch(error => {
         console.log(error);
