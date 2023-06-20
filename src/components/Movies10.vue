@@ -2,52 +2,68 @@
   <div class="container">
     <div class="block-main-moviestop10">
       <h2>Top 10 des films aujourd'hui</h2>
-      <div class="slide">
-        <div v-for="(movie, index) in movies" class="content-top10"
-             @mouseover="idVideoCard = movie.id; idMovieHover = index; getVideoCard()"
-             :id="`movie${index}`">
-          <svg :id="`item${index}`" width="100%" height="100%"
-               :viewBox="click % 2 === 1 ? viewBox[index] : viewBox[index]"
-               class="svg">
-            <path stroke="#595959" stroke-linejoin="square" stroke-width="4"
-                  :d="click % 2 === 1 ? logoNumber[index] : logoNumber[index]"></path>
-          </svg>
-          <img class="itemPoster" @click="showMovieInfos" @mouseover="delayedShowCardMovie(movie.id); isOver = true"
-               @mouseleave="isOver = false"
-               :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`">
-          <div
-              :style="showCardMovie && idMovieHover === index ? 'opacity: 1; z-index: 100; transform: scale(1); ' : 'opacity: 0; z-index: -1; transform: scale(0.1)'"
-              class="cardMovie" @mouseleave="showCardMovie = false;">
-            <iframe
-                v-if="showCardMovie && idMovieHover === index"
-                :src="videoUrl()"
-                title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen></iframe>
-            <div class="description">
-              <p class="age-limit" v-if="ageLimitMovie">{{ ageLimitMovie }}+</p>
-              <p><span v-if="hours > 0">{{ hours }} h</span> <span v-if="time > 0">{{ time }} min</span></p>
-            </div>
-            <div class="parent-block-btn" v-if="showCardMovie && idMovieHover === index">
-              <div class="block-btn" @click="showMovieInfos">
-                <i class="fa-solid fa-circle-info"></i>
-                <p>Plus d'infos</p>
+    </div>
+  </div>
+  <div class="carousel">
+    <Carousel :itemsToShow="3.95" :wrapAround="true" :transition="500">
+      <Slide v-for="(movie, index) in movies" :key="movie">
+        <div class="modal"
+             :style="isOver && index === indexSlide ? 'width: 500px; height: 500px; z-index: 5;' : 'width: 0; height: 0; z-index: 0'"
+             @mouseleave="isOver = false; cancelTimer()">
+          <img class="modal-img" :src="`https://image.tmdb.org/t/p/w1280/${movie.backdrop_path}`">
+          <div class="modal-content">
+            <div class="body-modal-content">
+              <p class="title">{{ movie.title }}</p>
+              <p class="recommand">Recommandé à {{ Math.round(movie.vote_average * 10) }} % <span
+                  class="date">{{ formatDate(movie.release_date) }}</span></p>
+              <div class="genres">
+                <p v-for="genre in focusGenres">
+                  {{ genre }}
+                </p>
               </div>
+              <i class="fa-solid fa-chevron-down down" @click="showMovieInfos()"></i>
             </div>
           </div>
         </div>
-        <!--<a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>-->
-        <a class="switchRight sliderButton" @click="sliderScrollRight">❯</a>
-      </div>
-    </div>
+        <div class="carousel__item" @mouseover="indexSlide = index; focusMovie = movie; getGenres(); idVideoCard = movie.id">
+          <div class="num">
+            <p>TOP</p>
+            <p>{{ index + 1 }}</p>
+          </div>
+          <img class="poster" :src="`https://image.tmdb.org/t/p/w780/${movie.poster_path}`" @mouseover="isOver = true; startTimer(index); getVideoCard(); videoUrl()"
+               @mouseleave="isHover = false;">
+        </div>
+      </Slide>
+      <template #addons>
+        <Pagination/>
+        <Navigation/>
+      </template>
+    </Carousel>
   </div>
 </template>
 <script>
+import {defineComponent} from 'vue'
+import {Carousel, Navigation, Slide, Pagination} from 'vue3-carousel'
+
+
+import 'vue3-carousel/dist/carousel.css'
+
 
 export default {
   name: "VideoTrailer",
+  components: {
+    Carousel,
+    Slide,
+    Pagination,
+    Navigation
+  },
   data() {
     return {
+      isHover: false,
+      genres: [],
+      focusGenres: [],
+      focusMovie: [],
+      indexSlide: 0,
       width: 0,
       indexWidth: 0,
       runtime: 0,
@@ -103,6 +119,51 @@ export default {
     this.widthSlide = document.getElementsByClassName("slide")[0].scrollWidth;
   },
   methods: {
+    startTimer(index) {
+      this.cancelTimer();
+      this.indexSlide = index;
+      this.intervalId = setTimeout(() => {
+        this.isOver = true;
+      }, 800);
+    },
+    cancelTimer() {
+      clearTimeout(this.intervalId);
+      this.isOver = false;
+    },
+    async getGenres() {
+      this.focusGenres = [];
+      fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+          .then(response => response.json())
+          .then(data => {
+            this.genres = data.genres;
+            for (let i = 0; i < this.focusMovie.genre_ids.length; i++) {
+              for (let j = 0; j < this.genres.length; j++) {
+                if (this.focusMovie.genre_ids[i] === this.genres[j].id) {
+                  this.focusGenres.push(this.genres[j].name);
+                  this.focusGenres.push("•");
+                }
+              }
+            }
+            this.focusGenres.pop();
+          }).catch(error => {
+        console.log(error);
+      });
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = date.getMonth() + 1; // Les mois sont indexés à partir de 0
+      const year = date.getFullYear();
+
+      // Ajouter des zéros devant le jour et le mois si nécessaire
+      const formattedDay = day < 10 ? `0${day}` : day;
+      const formattedMonth = month < 10 ? `0${month}` : month;
+
+      return `${formattedDay}/${formattedMonth}/${year}`;
+    },
+    overMovie() {
+      this.isOver = !this.isOver;
+    },
     delayedShowCardMovie(id) {
       setTimeout(() => {
         if (this.isOver === true) {
@@ -144,12 +205,13 @@ export default {
     videoUrl() {
       if (this.videoCard.length > 0) {
         const videoKey = this.videoCard[0].key;
+        console.log(videoKey);
         return `https://www.youtube.com/embed/${videoKey}?loop=1&controls=0&autoplay=1&mute=1&vq=hd1080&autohide=1&showinfo=0&modestbranding=1&playlist=${videoKey}`;
       }
       return "";
     },
     async moviePopular() {
-      fetch("https://api.themoviedb.org/3/trending/movie/day?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
+      fetch("https://api.themoviedb.org/3/trending/movie/day?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&append_to_response=release_dates")
           .then(response => response.json())
           .then(data => {
             data = data.results.slice(0, 10);
@@ -214,6 +276,151 @@ export default {
 
 </script>
 <style scoped>
+.down{
+  position: absolute;
+  right: 20px;
+  top: 0;
+  border: 1px solid white;
+  padding: 1rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.genres p {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  color: #bcbcbc;
+}
+.genres{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.date {
+  color: #bcbcbc
+}
+
+.body-modal-content {
+  margin-left: 10px;
+  position: relative;
+}
+
+.recommand {
+  color: #46d369;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.title {
+  font-size: 20px;
+}
+
+.modal-content {
+  width: 100%;
+  height: 30%;
+  background-color: #1a1a1a;
+  font-family: CineFindRegular, serif;
+  text-align: start;
+}
+
+.modal-img {
+  width: 100%;
+  height: 70%;
+  object-fit: cover;
+}
+
+.modal {
+  width: 0;
+  height: 0;
+  position: absolute;
+  transition: all 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.carousel__pagination-button:hover::after, .carousel__pagination-button--active::after {
+  background-color: green;
+}
+
+.num p {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.num {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  right: -10px;
+  background-color: #E50914;
+  padding: 1rem;
+  font-family: "CineFindBold", serif;
+  border-radius: 0 0 15px 15px;
+}
+
+.carousel {
+  margin-top: -100px;
+}
+
+.poster {
+  object-fit: cover;
+}
+
+.carousel__item {
+  width: 300px;
+  max-width: 300px;
+  height: 500px;
+  max-height: 500px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  user-select: none;
+}
+
+.carousel__slide {
+  padding: 5px;
+}
+
+.carousel__viewport {
+  perspective: 2000px;
+}
+
+.carousel__track {
+  transform-style: preserve-3d;
+}
+
+.carousel__slide--sliding {
+  transition: 0.5s;
+}
+
+.carousel__slide {
+  opacity: 0.9;
+  transform: scale(0.9);
+}
+
+.carousel__slide--active ~ .carousel__slide {
+  transform: scale(0.9);
+}
+
+.carousel__slide--prev {
+  opacity: 1;
+  transform: scale(0.9);
+}
+
+.carousel__slide--next {
+  opacity: 1;
+  transform: scale(0.95);
+}
+
+.carousel__slide--active {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .description {
   font-family: CineFindLight;
   display: flex;
@@ -349,7 +556,7 @@ iframe {
 }
 
 .slide {
-  display: flex;
+  display: none;
   height: 250px;
   position: relative;
   gap: 7%;

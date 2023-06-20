@@ -5,8 +5,6 @@
       <div class="slide">
         <div v-for="(serie, index) in series" class="content-top10"
              @mouseover="idVideoCard = serie.id; idserieHover = index; getVideoCard()"
-             :style="index < 5 ? `transition: all ${transitionTimeP1}s ease-in-out; transform: translateX(calc(${p1}vw + ${index * p2}vw))`
-             : `transition: all ${transitionTimeP2}s ease-in-out; transform: translateX(calc(${p5}vw + ${index * p2}vw))` "
              :id="`serie${index}`">
           <svg :id="`item${index}`" width="100%" height="100%"
                :viewBox="click % 2 === 1 ? viewBox[index] : viewBox[index]"
@@ -41,7 +39,7 @@
         </div>
       </div>
     </div>
-    <a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>
+    <!--<a class="switchLeft sliderButton" @click="sliderScrollLeft">❮</a>-->
     <a class="switchRight sliderButton" @click="sliderScrollRight">❯</a>
   </div>
 </template>
@@ -103,7 +101,6 @@ export default {
     this.seriePopular();
     this.getNumber();
     this.getViewBox();
-    this.placeseries();
   },
   methods: {
     delayedShowCardSerie(id) {
@@ -158,9 +155,6 @@ export default {
       }
       return "";
     },
-    async placeseries() {
-      this.p10 = -70;
-    },
     async seriePopular() {
       fetch("https://api.themoviedb.org/3/trending/tv/day?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr&page=1")
           .then(response => response.json())
@@ -196,24 +190,18 @@ export default {
       this.logoNumber.push(this.logoNumber9);
       this.logoNumber.push(this.logoNumber10);
     },
-    async sliderScrollLeft() {
-      this.click++;
-      if (this.click % 2 === 1) {
-        this.p1 = -70;
-        this.p5 = -70;
-      } else {
-        this.p1 = 15;
-        this.p5 = 15;
-      }
-    },
     async sliderScrollRight() {
-      this.click++;
-      if (this.click % 2 === 1) {
-        this.p1 = -70;
-        this.p5 = -70;
+      this.width += window.innerWidth;
+      this.indexWidth = 0;
+      if (this.width <= this.widthSlide) {
+        for (this.i = 0; this.i < 10; this.i++) {
+          document.getElementsByClassName("content-top10")[this.i].style.transform = `translateX(-${this.width}px)`;
+        }
       } else {
-        this.p1 = 15;
-        this.p5 = 15;
+        this.width = 0;
+        for (this.i = 0; this.i < 10; this.i++) {
+          document.getElementsByClassName("content-top10")[this.i].style.transform = "translateX(0)";
+        }
       }
     },
   },
@@ -222,7 +210,7 @@ export default {
 </script>
 <style scoped>
 .description {
-  font-family: CineFindLight;
+  font-family: CineFindLight,serif;
   display: flex;
   width: 100%;
   height: 50px;
@@ -354,10 +342,9 @@ iframe {
 
 .slide {
   display: flex;
-  gap: 50px;
-  width: 100%;
-  height: 25vh;
+  height: 250px;
   position: relative;
+  gap: 7%;
 }
 
 .slide img {
@@ -368,14 +355,12 @@ iframe {
 }
 
 .content-top10 {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  display: flex;
+  transition: all 0.4s ease-in-out;
 }
 
 svg {
-  position: absolute;
-  left: -7.8vw;
+  width: 100px;
   z-index: 0;
   top: 0;
   bottom: 0;

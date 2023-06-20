@@ -239,6 +239,7 @@ iframe {
   left: 0;
   right: 0;
   bottom: 0;
+  top: 63vh;
   z-index: 0;
   background: linear-gradient(180deg, hsla(0, 0%, 8%, 0) 0, hsla(0, 0%, 8%, .15) 15%, hsla(0, 0%, 8%, .35) 29%, hsla(0, 0%, 8%, .58) 44%, #141414 90%, #141414);
 }
