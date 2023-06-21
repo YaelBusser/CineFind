@@ -124,7 +124,7 @@ export default {
       this.indexSlide = index;
       this.intervalId = setTimeout(() => {
         this.isOver = true;
-      }, 800);
+      }, 500);
     },
     cancelTimer() {
       clearTimeout(this.intervalId);

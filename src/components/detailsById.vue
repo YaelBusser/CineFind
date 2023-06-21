@@ -28,6 +28,14 @@
             <span v-for="(genre, index) in details.genres">
               {{ genre.name }}<span v-if="index !== details.genres.length-1">, </span>
             </span>
+            <div class="streaming">
+              <span class="text-genres" v-if="streams.length > 0">Streaming: </span>
+              <div class="logos_stream">
+                <span v-for="stream in streams">
+                  <img class="logo_stream" :src="`https://image.tmdb.org/t/p/w1280/${stream.logo_path}`">
+                </span>
+              </div>
+            </div>
           </div>
           <div class="people">
 
@@ -58,6 +66,7 @@ export default {
       runtime: 0,
       hours: 0,
       time: 0,
+      streams: [],
     }
   },
   watch: {
@@ -65,11 +74,22 @@ export default {
       handler: function () {
         this.getDetailsMovie();
         this.getVideo();
+        this.getStreaming();
       },
       immediate: true
     }
   },
   methods: {
+    getStreaming() {
+      fetch(`https://api.themoviedb.org/3/${this.api}/${this.routeApi}/watch/providers?api_key=9f49de7ae4e7847f4cd272851ed07488&language=fr`)
+          .then(response => response.json())
+          .then(data => {
+            this.streams = data.results;
+            this.streams = this.streams["US"].flatrate;
+          }).catch(error => {
+        console.log(error);
+      });
+    },
     leaveDetails() {
       const query = Object.assign({}, this.$route.query);
       delete query.details;
@@ -166,6 +186,24 @@ export default {
 </script>
 
 <style scoped>
+.logos_stream{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.streaming {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.logo_stream {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 .block-age-time {
   display: flex;
   gap: 10px;
